@@ -14,7 +14,7 @@
         Dynamic and intelligent searches for domain entities. Compatible with different providers.
     </description>
 
-    <url>https://github.com/luidmidev/omni-search.git</url>
+    <url>https://github.com/peluware/java-omni-search.git</url>
 
     <licenses>
         <license>
@@ -27,14 +27,14 @@
         <developer>
             <id>luidmidev</id>
             <name>Luis Miguel Vasquez Basurto</name>
-            <email>playerluis159@gmail.com</email>
+            <email>luidmidev@gmail.com</email>
         </developer>
     </developers>
 
     <scm>
-        <url>https://github.com/luidmidev/omni-search.git</url>
-        <connection>scm:git:git://github.com/luidmidev/omni-search.git</connection>
-        <developerConnection>scm:git:sshl://github.com/luidmidev/omni-search.git</developerConnection>
+        <url>https://github.com/peluware/java-omni-search.git</url>
+        <connection>scm:git:git://github.com/peluware/java-omni-search.git</connection>
+        <developerConnection>scm:git:sshl://github.com/peluware/java-omni-search.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
