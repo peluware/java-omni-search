@@ -39,7 +39,7 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
 
     private final Root<T> root;
 
-    public JpaPredicateVisitor(Root<T> root, RsqlJpaBuilderTools builderTools) {
+    public JpaPredicateVisitor(Root<T> root, RsqlJpaBuilderOptions builderTools) {
         super(root.getJavaType(), builderTools);
         this.root = root;
     }
@@ -78,16 +78,17 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
     public Predicate visit(ComparisonNode node, EntityManager entityManager) {
         log.debug("Creating Predicate for ComparisonNode: {}", node);
 
-        var comparisionPredicateBuilder = builderTools.getComparisionPredicateBuilder();
-        var argumentParser = builderTools.getArgumentParser();
+        var argumentParser = builderOptions.getArgumentParser();
 
-        var propertyPath = findPropertyPath(node.getSelector(), root, entityManager);
+        var path = findPath(node.getSelector(), root, entityManager);
 
-        log.trace("Cast all arguments to type {}.", propertyPath.getJavaType().getName());
-        var castedArguments = argumentParser.parse(node.getArguments(), propertyPath.getJavaType());
+        log.trace("Cast all arguments to type {}.", path.getJavaType().getName());
+        var castedArguments = argumentParser.parse(node.getArguments(), path.getJavaType());
+
+        var comparisionPredicateBuilder = builderOptions.getComparisionPredicateBuilder();
 
         return comparisionPredicateBuilder.buildComparisionPredicate(
-                propertyPath,
+                path,
                 node.getOperator(),
                 castedArguments,
                 entityManager
@@ -98,37 +99,29 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
     /**
      * Find a property path in the graph From<?,?> startRoot
      *
-     * @param propertyPath   The property path to find.
+     * @param path   The property path to find.
      * @param startRoot      From<?,?> that property path depends on.
      * @param entityManager  JPA EntityManager.
      * @return The Path for the property path
      * @throws IllegalArgumentException if attribute of the given property name does not exist
      */
-    public Path<?> findPropertyPath(String propertyPath, Path<?> startRoot, EntityManager entityManager) {
-        var graph = propertyPath.split("\\.");
+    public Path<?> findPath(String path, Path<?> startRoot, EntityManager entityManager) {
+        var graph = path.split("\\.");
 
         var metaModel = entityManager.getMetamodel();
         var classMetadata = metaModel.managedType(startRoot.getJavaType());
 
         var currentRoot = startRoot;
-        var attributeMapper = builderTools.getAttributeMapper();
 
         for (var attribute : graph) {
-            var mappedProperty = attributeMapper.map(attribute, classMetadata.getJavaType());
-            if (!mappedProperty.equals(attribute)) {
-                currentRoot = findPropertyPath(mappedProperty, currentRoot, entityManager);
-                continue;
-            }
 
-            if (!hasPropertyName(attribute, classMetadata)) {
+            if (!hasProperty(attribute, classMetadata)) {
                 throw new IllegalArgumentException("Unknown property: " + attribute + " From<?,?> entity " + classMetadata.getJavaType().getName());
             }
 
             if (isAssociationType(attribute, classMetadata)) {
                 var associationType = findPropertyType(attribute, classMetadata);
-                var previousClass = classMetadata.getJavaType().getName();
                 classMetadata = metaModel.managedType(associationType);
-                log.trace("Create a join between {} and {}.", previousClass, classMetadata.getJavaType().getName());
 
                 if (currentRoot instanceof From<?, ?> from) {
                     currentRoot = from.join(attribute);
@@ -137,7 +130,7 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
                     currentRoot = currentRoot.get(attribute);
                 }
             } else {
-                log.trace("Create property path for type {} property {}.", classMetadata.getJavaType().getName(), mappedProperty);
+                log.trace("Create property path for type {} property {}.", classMetadata.getJavaType().getName(), attribute);
                 currentRoot = currentRoot.get(attribute);
 
                 if (isEmbeddedType(attribute, classMetadata)) {
@@ -157,7 +150,7 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
      * @param classMetadata  Class metamodel that may hold that property.
      * @return               <tt>true</tt> if the class has that property, <tt>false</tt> otherwise.
      */
-    protected <E> boolean hasPropertyName(String property, ManagedType<E> classMetadata) {
+    protected <E> boolean hasProperty(String property, ManagedType<E> classMetadata) {
         Set<Attribute<? super E, ?>> names = classMetadata.getAttributes();
         for (Attribute<? super E, ?> name : names) {
             if (name.getName().equals(property)) return true;

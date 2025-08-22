@@ -28,16 +28,13 @@ import com.peluware.omnisearch.core.rsql.RsqlUnknowComparisionOperatorException;
 import cz.jirutka.rsql.parser.ast.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
-import jakarta.persistence.metamodel.Attribute;
-import jakarta.persistence.metamodel.ManagedType;
-import jakarta.persistence.metamodel.PluralAttribute;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
 @Slf4j
 @SuppressWarnings({"unchecked", "rawtypes", "java:S3740"})
-public class DefaultRsqlJpaComparisionPredicate implements RsqlJpaComparisionPredicate {
+public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaComparisionPredicateBuilder {
 
     public static final Character LIKE_WILDCARD = '*';
 
@@ -146,7 +143,7 @@ public class DefaultRsqlJpaComparisionPredicate implements RsqlJpaComparisionPre
     }
 
     protected Predicate notEqualPredicate(Expression<?> propertyPath, List<?> arguments, EntityManager manager) {
-        Object argument = arguments.getFirst();
+        var argument = arguments.getFirst();
         if (argument instanceof String casted) {
             return createNotLike((Expression<String>) propertyPath, casted, manager);
         }
@@ -177,7 +174,7 @@ public class DefaultRsqlJpaComparisionPredicate implements RsqlJpaComparisionPre
      * @return the predicate
      */
     protected Predicate createBetweenThan(Expression<? extends Date> propertyPath, Date start, Date end, EntityManager manager) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        var builder = manager.getCriteriaBuilder();
         return builder.between(propertyPath, start, end);
     }
 
@@ -386,58 +383,6 @@ public class DefaultRsqlJpaComparisionPredicate implements RsqlJpaComparisionPre
     protected Predicate createNotIn(Expression<?> propertyPath, List<?> arguments, EntityManager manager) {
         var builder = manager.getCriteriaBuilder();
         return builder.not(createIn(propertyPath, arguments));
-    }
-
-    /**
-     * Verify if a property is an Association type.
-     *
-     * @param property       Property to verify.
-     * @param classMetadata  Metamodel of the class we want to check.
-     * @return               <tt>true</tt> if the property is an associantion, <tt>false</tt> otherwise.
-     */
-    protected <T> boolean isAssociationType(String property, ManagedType<T> classMetadata) {
-        return classMetadata.getAttribute(property).isAssociation();
-    }
-
-    /**
-     * Verify if a property is an Embedded type.
-     *
-     * @param property       Property to verify.
-     * @param classMetadata  Metamodel of the class we want to check.
-     * @return               <tt>true</tt> if the property is an embedded attribute, <tt>false</tt> otherwise.
-     */
-    protected <T> boolean isEmbeddedType(String property, ManagedType<T> classMetadata) {
-        return classMetadata.getAttribute(property).getPersistentAttributeType() == Attribute.PersistentAttributeType.EMBEDDED;
-    }
-
-    /**
-     * Verifies if a class metamodel has the specified property.
-     *
-     * @param property       Property name.
-     * @param classMetadata  Class metamodel that may hold that property.
-     * @return               <tt>true</tt> if the class has that property, <tt>false</tt> otherwise.
-     */
-    protected <T> boolean hasPropertyName(String property, ManagedType<T> classMetadata) {
-        Set<Attribute<? super T, ?>> names = classMetadata.getAttributes();
-        for (Attribute<? super T, ?> name : names) {
-            if (name.getName().equals(property)) return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get the property Type out of the metamodel.
-     *
-     * @param property       Property name for type extraction.
-     * @param classMetadata  Reference class metamodel that holds property type.
-     * @return Class java type for the property,
-     * 						 if the property is a pluralAttribute it will take the bindable java type of that collection.
-     */
-    protected <T> Class<?> findPropertyType(String property, ManagedType<T> classMetadata) {
-        if (classMetadata.getAttribute(property).isCollection()) {
-            return ((PluralAttribute<?, ?, ?>) classMetadata.getAttribute(property)).getBindableJavaType();
-        }
-        return classMetadata.getAttribute(property).getJavaType();
     }
 
 

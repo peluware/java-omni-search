@@ -1,4 +1,4 @@
-package com.peluware.omnisearch.mongodb;
+package com.peluware.omnisearch.mongodb.resolvers;
 
 @FunctionalInterface
 public interface CollectionNameResolver {

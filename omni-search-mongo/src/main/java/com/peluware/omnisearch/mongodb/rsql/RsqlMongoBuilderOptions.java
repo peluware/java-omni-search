@@ -21,17 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.jpa.rsql;
+package com.peluware.omnisearch.mongodb.rsql;
 
-import com.peluware.omnisearch.core.rsql.RsqlUnknowComparisionOperatorException;
-import cz.jirutka.rsql.parser.ast.ComparisonOperator;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Predicate;
 
-import java.util.List;
+import com.peluware.omnisearch.core.rsql.RsqlBuilderOptions;
 
-public interface RsqlJpaComparisionPredicate {
+public interface RsqlMongoBuilderOptions extends RsqlBuilderOptions {
 
-    Predicate buildComparisionPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, EntityManager manager) throws RsqlUnknowComparisionOperatorException;
+    RsqlMongoBuilderOptions DEFAULT = new DefaultRsqlMongoBuilderOptions();
+
+    /**
+     * Get a predicate strategy for parsing Node into Predicate.
+     *
+     * @return PredicateBuilderStrategy
+     */
+    RsqlMongoComparisionFilterBuilder getComparisionFilterBuilder();
 }

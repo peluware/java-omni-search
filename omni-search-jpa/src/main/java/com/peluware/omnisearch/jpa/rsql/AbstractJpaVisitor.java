@@ -52,11 +52,11 @@ public abstract class AbstractJpaVisitor<T, E> implements RSQLVisitor<T, EntityM
      *  Set a predicate strategy.
      *
      */
-    protected RsqlJpaBuilderTools builderTools;
+    protected RsqlJpaBuilderOptions builderOptions;
 
 
-    protected AbstractJpaVisitor(Class<? extends E> entityClass, RsqlJpaBuilderTools builderTools) {
+    protected AbstractJpaVisitor(Class<? extends E> entityClass, RsqlJpaBuilderOptions builderOptions) {
         this.entityClass = entityClass;
-        this.builderTools = builderTools;
+        this.builderOptions = builderOptions;
     }
 }

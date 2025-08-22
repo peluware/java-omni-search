@@ -4,7 +4,10 @@ import com.peluware.omnisearch.core.OmniSearch;
 import com.peluware.omnisearch.core.OmniSearchBaseOptions;
 import com.peluware.omnisearch.core.OmniSearchOptions;
 import com.mongodb.client.MongoDatabase;
-import com.peluware.omnisearch.core.rsql.RsqlBuilderTools;
+import com.peluware.omnisearch.mongodb.resolvers.CollectionNameResolver;
+import com.peluware.omnisearch.mongodb.resolvers.PropertyNameResolver;
+import com.peluware.omnisearch.mongodb.rsql.MongoFilterVisitor;
+import com.peluware.omnisearch.mongodb.rsql.RsqlMongoBuilderOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.and;
+
 /**
  * MongoDB-based implementation of the {@link OmniSearch} interface,
  * allowing flexible querying, sorting, and pagination of MongoDB documents.
@@ -28,21 +33,29 @@ public class MongoOmniSearch implements OmniSearch {
 
 
     private final MongoDatabase database;
-    private final RsqlBuilderTools rsqlBuilderTools;
+    private final RsqlMongoBuilderOptions rsqlBuilderOptions;
+
+    public MongoOmniSearch(MongoDatabase database) {
+        this(database, RsqlMongoBuilderOptions.DEFAULT);
+    }
 
     @Setter
     private CollectionNameResolver collectionNameResolver = CollectionNameResolver.DEFAULT;
 
     @Setter
-    private BsonFilterBuilder bsonFilterBuilder = BsonFilterBuilder.DEFAULT;
+    private PropertyNameResolver propertyNameResolver = PropertyNameResolver.DEFAULT;
+
+    @Setter
+    private MongoOmniSearchFilterBuilder filterBuilder = MongoOmniSearchFilterBuilder.DEFAULT;
 
 
     @Override
     public <E> List<E> search(Class<E> entityClass, OmniSearchOptions options) {
 
-        var filter = bsonFilterBuilder.resolveFilter(entityClass, options, rsqlBuilderTools);
         var collectionName = collectionNameResolver.resolveCollectionName(entityClass);
         var collection = database.getCollection(collectionName, entityClass);
+
+        var filter = buildFilter(entityClass, options);
 
         var findIterable = collection.find(filter);
 
@@ -82,14 +95,25 @@ public class MongoOmniSearch implements OmniSearch {
     @Override
     public <E> long count(Class<E> entityClass, OmniSearchBaseOptions options) {
 
-        var filter = bsonFilterBuilder.resolveFilter(entityClass, options, rsqlBuilderTools);
         var collectionName = collectionNameResolver.resolveCollectionName(entityClass);
         var collection = database.getCollection(collectionName, entityClass);
+
+        var filter = buildFilter(entityClass, options);
 
         debugJsonFilter(filter);
 
         log.debug("Executing MongoDB count query: {} for entity: {}", filter, entityClass.getSimpleName());
         return collection.countDocuments(filter);
+    }
+
+    private <E> Bson buildFilter(Class<E> entityClass, OmniSearchBaseOptions options) {
+        var filter = filterBuilder.buildFilter(entityClass, options);
+        var query = options.getQuery();
+        if (query != null) {
+            var rsqlFilter = query.accept(new MongoFilterVisitor<>(entityClass, rsqlBuilderOptions, propertyNameResolver), null);
+            filter = and(filter, rsqlFilter);
+        }
+        return filter;
     }
 
     private void debugJsonFilter(Bson filter) {

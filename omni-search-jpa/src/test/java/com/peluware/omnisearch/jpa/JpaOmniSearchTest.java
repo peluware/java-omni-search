@@ -251,9 +251,9 @@ class JpaOmniSearchTest {
         omniSearch = new JpaOmniSearch(em);
 
 
-        var conditions = new RSQLParser().parse("houses.country.countinent.code==NA");
+        var query = new RSQLParser().parse("houses.country.countinent.code==NA");
         var options = new OmniSearchOptions()
-                .query(conditions);
+                .query(query);
 
         List<User> result = omniSearch.search(User.class, options);
         assertEquals(2, result.size());

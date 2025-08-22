@@ -3,8 +3,13 @@ package com.peluware.omnisearch.jpa;
 import com.peluware.omnisearch.core.OmniSearch;
 import com.peluware.omnisearch.core.OmniSearchBaseOptions;
 import com.peluware.omnisearch.core.OmniSearchOptions;
-import com.peluware.omnisearch.jpa.rsql.RsqlJpaBuilderTools;
+import com.peluware.omnisearch.jpa.rsql.JpaPredicateVisitor;
+import com.peluware.omnisearch.jpa.rsql.RsqlJpaBuilderOptions;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -17,26 +22,29 @@ import java.util.*;
 public class JpaOmniSearch implements OmniSearch {
 
     private final EntityManager em;
-    private final RsqlJpaBuilderTools rsqlBuilderTools;
+    private final RsqlJpaBuilderOptions rsqlBuilderTools;
+
+    @Setter
+    private JpaOmniSearchPredicateBuilder predicateBuilder = JpaOmniSearchPredicateBuilder.DEFAULT;
 
     /**
      * Constructs a {@code JpaOmniSearch} using the provided {@link EntityManager}
-     * and the default {@link RsqlJpaBuilderTools}.
+     * and the default {@link RsqlJpaBuilderOptions}.
      *
      * @param em the entity manager used to execute queries
      */
     public JpaOmniSearch(EntityManager em) {
-        this(em, RsqlJpaBuilderTools.DEFAULT);
+        this(em, RsqlJpaBuilderOptions.DEFAULT);
     }
 
     /**
      * Constructs a {@code JpaOmniSearch} using the provided {@link EntityManager}
-     * and {@link RsqlJpaBuilderTools} instance.
+     * and {@link RsqlJpaBuilderOptions} instance.
      *
      * @param em           the entity manager used to execute queries
      * @param rsqlBuilderTools helper tools used to build RSQL predicates and joins
      */
-    public JpaOmniSearch(EntityManager em, RsqlJpaBuilderTools rsqlBuilderTools) {
+    public JpaOmniSearch(EntityManager em, RsqlJpaBuilderOptions rsqlBuilderTools) {
         this.em = em;
         this.rsqlBuilderTools = rsqlBuilderTools;
     }
@@ -56,7 +64,7 @@ public class JpaOmniSearch implements OmniSearch {
         var query = cb.createQuery(entityClass);
         var root = query.from(entityClass);
 
-        var predicate = JpaOmniSearchPredicateBuilder.buildPredicate(em, root, options, rsqlBuilderTools);
+        var predicate = buildPredicate(root, cb, options);
 
         query.where(predicate);
 
@@ -98,11 +106,22 @@ public class JpaOmniSearch implements OmniSearch {
         var query = cb.createQuery(Long.class);
         var root = query.from(entityClass);
 
-        var predicate = JpaOmniSearchPredicateBuilder.buildPredicate(em, root, options, rsqlBuilderTools);
+        var predicate = buildPredicate(root, cb, options);
 
         query.where(predicate);
         query.select(cb.count(root));
 
         return em.createQuery(query).getSingleResult();
+    }
+
+    private <E> Predicate buildPredicate(Root<E> root, CriteriaBuilder cb, OmniSearchBaseOptions options) {
+        var predicate = predicateBuilder.buildPredicate(em, root, options);
+        var query = options.getQuery();
+        if (query != null) {
+            var visitor = new JpaPredicateVisitor<>(root, rsqlBuilderTools);
+            var filtersPredicate = query.accept(visitor, em);
+            predicate = cb.and(predicate, filtersPredicate);
+        }
+        return predicate;
     }
 }

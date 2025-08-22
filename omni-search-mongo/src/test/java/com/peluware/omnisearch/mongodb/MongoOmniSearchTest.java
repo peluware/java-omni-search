@@ -5,11 +5,11 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
 import com.peluware.omnisearch.core.OmniSearchOptions;
 
-import com.peluware.omnisearch.core.rsql.DefaultRsqlBuilderTools;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -105,9 +105,9 @@ class MongoOmniSearchTest {
         database = mongoClient.getDatabase("test_omnisearch");
 
         // Clear any existing data
-        database.getCollection("product").deleteMany(new org.bson.Document());
+        database.getCollection("product").deleteMany(Filters.empty());
 
-        omniSearch = new MongoOmniSearch(database, new DefaultRsqlBuilderTools());
+        omniSearch = new MongoOmniSearch(database);
 
         // Insert test data
         insertTestData();

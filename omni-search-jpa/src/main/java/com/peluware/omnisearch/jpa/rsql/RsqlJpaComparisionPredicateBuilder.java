@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Jakub Jirutka <jakub@jirutka.cz>.
+ * Copyright 2015 Antonio Rabelo.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.core.rsql;
+package com.peluware.omnisearch.jpa.rsql;
 
-/**
- * Provides mapping of selectors in RSQL to attributes names of entities.
- *
- * @author Jakub Jirutka <jakub@jirutka.cz>
- */
-public interface RsqlAttributeMapper {
+import com.peluware.omnisearch.core.rsql.RsqlUnknowComparisionOperatorException;
+import cz.jirutka.rsql.parser.ast.ComparisonOperator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
 
-    /**
-     * Translate given selector to the mapped property name or dot-separated
-     * path of the property.
-     *
-     * @param selector Selector that identifies some element of an entry's content.
-     * @param entityClass entity class
-     * @return Property name or dot-separated path of the property.
-     */
-    String map(String selector, Class<?> entityClass);
+import java.util.List;
 
+public interface RsqlJpaComparisionPredicateBuilder {
+
+    Predicate buildComparisionPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, EntityManager manager) throws RsqlUnknowComparisionOperatorException;
 }

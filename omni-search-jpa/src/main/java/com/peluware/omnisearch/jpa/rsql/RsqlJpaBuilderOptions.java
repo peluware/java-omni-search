@@ -21,26 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.core.rsql;
+package com.peluware.omnisearch.jpa.rsql;
 
 
-public interface RsqlBuilderTools {
+import com.peluware.omnisearch.core.rsql.RsqlBuilderOptions;
 
-    RsqlBuilderTools DEFAULT = new DefaultRsqlBuilderTools();
+public interface RsqlJpaBuilderOptions extends RsqlBuilderOptions {
 
-    /**
-     * Get a mapper for the attributes in RSQL queries.
-     *
-     * @return Mapper
-     */
-    RsqlAttributeMapper getAttributeMapper();
-
+    RsqlJpaBuilderOptions DEFAULT = new DefaultRsqlJpaBuilderOptions();
 
     /**
-     * Get a argument parser for casting types.
+     * Get a predicate strategy for parsing Node into Predicate.
      *
-     * @return ArgumentParser
+     * @return PredicateBuilderStrategy
      */
-    RsqlArgumentParser getArgumentParser();
-
+    RsqlJpaComparisionPredicateBuilder getComparisionPredicateBuilder();
 }
