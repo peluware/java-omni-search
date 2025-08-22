@@ -1,4 +1,4 @@
-package com.peluware.omnisearch.jpa;
+package com.peluware.omnisearch.core;
 
 import lombok.experimental.UtilityClass;
 
@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.function.Function;
 
 @UtilityClass
-class ParseNumber {
+public class ParseNumber {
 
     /**
      * List of converters to transform strings into numeric types.
      */
-    static final List<Parser<? extends Number>> PARSERS = List.of(
+    public static final List<Parser<? extends Number>> PARSERS = List.of(
             Parser.of(Integer.class, Integer::parseInt),
             Parser.of(Long.class, Long::parseLong),
             Parser.of(Double.class, Double::parseDouble),
@@ -28,7 +28,7 @@ class ParseNumber {
             Parser.of(byte.class, Byte::parseByte)
     );
 
-    record Parser<T>(Class<T> type, Function<String, T> converter) {
+    public record Parser<T>(Class<T> type, Function<String, T> converter) {
         static <T> Parser<T> of(Class<T> type, Function<String, T> converter) {
             return new Parser<>(type, converter);
         }

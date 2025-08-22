@@ -23,42 +23,185 @@
  */
 package com.peluware.omnisearch.jpa.rsql;
 
-import cz.jirutka.rsql.parser.ast.AndNode;
-import cz.jirutka.rsql.parser.ast.ComparisonNode;
-import cz.jirutka.rsql.parser.ast.OrNode;
-import cz.jirutka.rsql.parser.ast.RSQLVisitor;
-import com.peluware.omnisearch.jpa.rsql.builder.AbstractJpaVisitor;
-import com.peluware.omnisearch.jpa.rsql.builder.BuilderTools;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import cz.jirutka.rsql.parser.ast.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
+import jakarta.persistence.metamodel.Attribute;
+import jakarta.persistence.metamodel.ManagedType;
+import jakarta.persistence.metamodel.PluralAttribute;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 @Slf4j
-public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> implements RSQLVisitor<Predicate, EntityManagerAdapter> {
+public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> implements RSQLVisitor<Predicate, EntityManager> {
 
     private final Root<T> root;
 
-    public JpaPredicateVisitor(Root<T> t, BuilderTools builderTools) {
-        super(t.getJavaType(), builderTools);
-        this.root = t;
+    public JpaPredicateVisitor(Root<T> root, RsqlJpaBuilderTools builderTools) {
+        super(root.getJavaType(), builderTools);
+        this.root = root;
     }
 
-
     @Override
-    public Predicate visit(AndNode node, EntityManagerAdapter entityManager) {
+    public Predicate visit(AndNode node, EntityManager entityManager) {
         log.debug("Creating Predicate for AndNode: {}", node);
-        return getBuilderTools().getPredicateBuilder().createPredicate(node, root, entityClass, entityManager, getBuilderTools());
+        return visitLogicalNode(node, entityManager);
     }
 
     @Override
-    public Predicate visit(OrNode node, EntityManagerAdapter entityManager) {
+    public Predicate visit(OrNode node, EntityManager entityManager) {
         log.debug("Creating Predicate for OrNode: {}", node);
-        return getBuilderTools().getPredicateBuilder().createPredicate(node, root, entityClass, entityManager, getBuilderTools());
+        return visitLogicalNode(node, entityManager);
+    }
+
+    private Predicate visitLogicalNode(LogicalNode node, EntityManager entityManager) {
+        var cb = entityManager.getCriteriaBuilder();
+        var children = node.getChildren();
+        if (children.isEmpty()) {
+            return cb.disjunction();
+        }
+
+        var predicates = new ArrayList<Predicate>();
+        for (var childNode : children) {
+            predicates.add(childNode.accept(this, entityManager));
+        }
+
+        return switch (node.getOperator()) {
+            case OR -> cb.or(predicates.toArray(new Predicate[0]));
+            case AND -> cb.and(predicates.toArray(new Predicate[0]));
+        };
     }
 
     @Override
-    public Predicate visit(ComparisonNode node, EntityManagerAdapter entityManager) {
+    public Predicate visit(ComparisonNode node, EntityManager entityManager) {
         log.debug("Creating Predicate for ComparisonNode: {}", node);
-        return getBuilderTools().getPredicateBuilder().createPredicate(node, root, entityClass, entityManager, getBuilderTools());
+
+        var comparisionPredicateBuilder = builderTools.getComparisionPredicateBuilder();
+        var argumentParser = builderTools.getArgumentParser();
+
+        var propertyPath = findPropertyPath(node.getSelector(), root, entityManager);
+
+        log.trace("Cast all arguments to type {}.", propertyPath.getJavaType().getName());
+        var castedArguments = argumentParser.parse(node.getArguments(), propertyPath.getJavaType());
+
+        return comparisionPredicateBuilder.buildComparisionPredicate(
+                propertyPath,
+                node.getOperator(),
+                castedArguments,
+                entityManager
+        );
     }
+
+
+    /**
+     * Find a property path in the graph From<?,?> startRoot
+     *
+     * @param propertyPath   The property path to find.
+     * @param startRoot      From<?,?> that property path depends on.
+     * @param entityManager  JPA EntityManager.
+     * @return The Path for the property path
+     * @throws IllegalArgumentException if attribute of the given property name does not exist
+     */
+    public Path<?> findPropertyPath(String propertyPath, Path<?> startRoot, EntityManager entityManager) {
+        var graph = propertyPath.split("\\.");
+
+        var metaModel = entityManager.getMetamodel();
+        var classMetadata = metaModel.managedType(startRoot.getJavaType());
+
+        var currentRoot = startRoot;
+        var attributeMapper = builderTools.getAttributeMapper();
+
+        for (var attribute : graph) {
+            var mappedProperty = attributeMapper.map(attribute, classMetadata.getJavaType());
+            if (!mappedProperty.equals(attribute)) {
+                currentRoot = findPropertyPath(mappedProperty, currentRoot, entityManager);
+                continue;
+            }
+
+            if (!hasPropertyName(attribute, classMetadata)) {
+                throw new IllegalArgumentException("Unknown property: " + attribute + " From<?,?> entity " + classMetadata.getJavaType().getName());
+            }
+
+            if (isAssociationType(attribute, classMetadata)) {
+                var associationType = findPropertyType(attribute, classMetadata);
+                var previousClass = classMetadata.getJavaType().getName();
+                classMetadata = metaModel.managedType(associationType);
+                log.trace("Create a join between {} and {}.", previousClass, classMetadata.getJavaType().getName());
+
+                if (currentRoot instanceof From<?, ?> from) {
+                    currentRoot = from.join(attribute);
+                } else {
+                    log.warn("Root is not a From<?, ?> type, cannot create join for property {}. Using get() instead.", attribute);
+                    currentRoot = currentRoot.get(attribute);
+                }
+            } else {
+                log.trace("Create property path for type {} property {}.", classMetadata.getJavaType().getName(), mappedProperty);
+                currentRoot = currentRoot.get(attribute);
+
+                if (isEmbeddedType(attribute, classMetadata)) {
+                    var embeddedType = findPropertyType(attribute, classMetadata);
+                    classMetadata = metaModel.managedType(embeddedType);
+                }
+            }
+        }
+
+        return currentRoot;
+    }
+
+    /**
+     * Verifies if a class metamodel has the specified property.
+     *
+     * @param property       Property name.
+     * @param classMetadata  Class metamodel that may hold that property.
+     * @return               <tt>true</tt> if the class has that property, <tt>false</tt> otherwise.
+     */
+    protected <E> boolean hasPropertyName(String property, ManagedType<E> classMetadata) {
+        Set<Attribute<? super E, ?>> names = classMetadata.getAttributes();
+        for (Attribute<? super E, ?> name : names) {
+            if (name.getName().equals(property)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get the property Type out of the metamodel.
+     *
+     * @param property       Property name for type extraction.
+     * @param classMetadata  Reference class metamodel that holds property type.
+     * @return Class java type for the property,
+     * 						 if the property is a pluralAttribute it will take the bindable java type of that collection.
+     */
+    protected <E> Class<?> findPropertyType(String property, ManagedType<E> classMetadata) {
+        if (classMetadata.getAttribute(property).isCollection()) {
+            return ((PluralAttribute<?, ?, ?>) classMetadata.getAttribute(property)).getBindableJavaType();
+        }
+        return classMetadata.getAttribute(property).getJavaType();
+    }
+
+
+    /**
+     * Verify if a property is an Association type.
+     *
+     * @param property       Property to verify.
+     * @param classMetadata  Metamodel of the class we want to check.
+     * @return               <tt>true</tt> if the property is an associantion, <tt>false</tt> otherwise.
+     */
+    protected <E> boolean isAssociationType(String property, ManagedType<E> classMetadata) {
+        return classMetadata.getAttribute(property).isAssociation();
+    }
+
+    /**
+     * Verify if a property is an Embedded type.
+     *
+     * @param property       Property to verify.
+     * @param classMetadata  Metamodel of the class we want to check.
+     * @return               <tt>true</tt> if the property is an embedded attribute, <tt>false</tt> otherwise.
+     */
+    protected <E> boolean isEmbeddedType(String property, ManagedType<E> classMetadata) {
+        return classMetadata.getAttribute(property).getPersistentAttributeType() == Attribute.PersistentAttributeType.EMBEDDED;
+    }
+
+
 }

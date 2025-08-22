@@ -21,26 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.jpa.rsql.builder;
+package com.peluware.omnisearch.core.rsql;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Simple implementation of the {@link PropertiesMapper}.
+ * Simple implementation of the {@link RsqlAttributeMapper}.
  *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
 @Setter
 @Getter
-public class DefaultPropertiesMapper implements PropertiesMapper {
-
-	private static final Logger LOG = Logger.getLogger(DefaultPropertiesMapper.class.getName());
+@Slf4j
+public class DefaultRsqlAttributeMapper implements RsqlAttributeMapper {
 
 
     private Map<Class<?>, Map<String, String>> mapping;
@@ -50,27 +49,28 @@ public class DefaultPropertiesMapper implements PropertiesMapper {
      * Construct new <tt>SimpleMapper</tt> with zero initial capacity of the
      * entities map.
      */
-    public DefaultPropertiesMapper() {
-    	this(0);
+    public DefaultRsqlAttributeMapper() {
+        this(0);
     }
+
     /**
      * Construct new <tt>SimpleMapper</tt> with the specified initial capacity
      * of the entities map.
      *
      * @param initialCapacity initial capacity of entities map
      */
-    public DefaultPropertiesMapper(int initialCapacity) {
+    public DefaultRsqlAttributeMapper(int initialCapacity) {
         mapping = HashMap.newHashMap(initialCapacity);
     }
 
-    public String translate(String selector, Class<?> entityClass) {
+    public String map(String selector, Class<?> entityClass) {
         if (mapping.isEmpty()) return selector;
 
         var map = mapping.get(entityClass);
         var property = (map != null) ? map.get(selector) : null;
 
         if (property != null) {
-        	LOG.log(Level.INFO, "Found mapping {0} -> {1}" , new Object[] {selector, property});
+            log.debug("Found mapping {} -> {}", selector, property);
             return property;
         }
 

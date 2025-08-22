@@ -31,16 +31,16 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * {@inheritDoc}
      */
     @Override
-    public OmniSearchOptions joins(@NotNull Set<String> joins) {
-        return (OmniSearchOptions) super.joins(joins);
+    public OmniSearchOptions propagations(@NotNull Set<String> propagations) {
+        return (OmniSearchOptions) super.propagations(propagations);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public OmniSearchOptions joins(String @NotNull ... joins) {
-        return (OmniSearchOptions) super.joins(joins);
+    public OmniSearchOptions propagations(String @NotNull ... propagations) {
+        return (OmniSearchOptions) super.propagations(propagations);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.peluware.omnisearch.jpa.entities;
 
-import com.peluware.omnisearch.jpa.JpaEnumSearchCandidate;
+import com.peluware.omnisearch.core.EnumSearchCandidate;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +49,7 @@ public class User {
     @Builder.Default
     private Set<Contacts> contacts = new HashSet<>();
 
-    public enum Level implements JpaEnumSearchCandidate {
+    public enum Level implements EnumSearchCandidate {
         LOW, MEDIUM, HIGH;
 
         @Override
@@ -66,7 +66,7 @@ public class User {
         }
     }
 
-    public enum Role implements JpaEnumSearchCandidate {
+    public enum Role implements EnumSearchCandidate {
         USER, ADMIN, GUEST;
 
         @Override

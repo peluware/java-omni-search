@@ -22,9 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.jpa.rsql.builder;
+package com.peluware.omnisearch.core.rsql;
 
-import com.peluware.omnisearch.jpa.rsql.RsqlArgumentFormatException;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ import java.util.List;
  * @author Jakub Jirutka <jakub@jirutka.cz>
  * @author AntonioRabelo
  */
-public interface ArgumentParser {
+public interface RsqlArgumentParser {
 
     /**
      * Parse given string argument as the specified class type.

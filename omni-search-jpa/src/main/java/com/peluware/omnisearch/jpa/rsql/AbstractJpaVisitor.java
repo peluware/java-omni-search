@@ -23,47 +23,40 @@
  */
 package com.peluware.omnisearch.jpa.rsql;
 
-import cz.jirutka.rsql.parser.ast.ComparisonOperator;
-import cz.jirutka.rsql.parser.ast.RSQLOperators;
-import lombok.Getter;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import cz.jirutka.rsql.parser.ast.RSQLVisitor;
+import jakarta.persistence.EntityManager;
+import lombok.Setter;
 
 /**
- * ComparisonOperatorProxy Enum
- * Convert RSQLOperators to an Enumeration type.
+ * AbstractQueryVisitor
+ *
+ * Abstract Visitor class for parsing RSQL AST Nodes.
  *
  * @author AntonioRabelo
- * @since 2015-02-10
+ *
+ * @param <T> Result type
+ * @param <E> Entity type
  */
-@Getter
-public enum ComparisonOperatorProxy {
-    EQUAL(RSQLOperators.EQUAL),
-    NOT_EQUAL(RSQLOperators.NOT_EQUAL),
-    GREATER_THAN(RSQLOperators.GREATER_THAN),
-    GREATER_THAN_OR_EQUAL(RSQLOperators.GREATER_THAN_OR_EQUAL),
-    LESS_THAN(RSQLOperators.LESS_THAN),
-    LESS_THAN_OR_EQUAL(RSQLOperators.LESS_THAN_OR_EQUAL),
-    IN(RSQLOperators.IN),
-    NOT_IN(RSQLOperators.NOT_IN);
+@Setter
+public abstract class AbstractJpaVisitor<T, E> implements RSQLVisitor<T, EntityManager> {
 
-    private final ComparisonOperator operator;
+    /**
+     * -- SETTER --
+     *  Set the entity class explicitly, needed when the entity type is itself a generic
+     *
+     */
+    protected Class<? extends E> entityClass;
 
-    private static final Map<ComparisonOperator, ComparisonOperatorProxy> CACHE = Collections.synchronizedMap(new HashMap<>());
+    /**
+     * -- SETTER --
+     *  Set a predicate strategy.
+     *
+     */
+    protected RsqlJpaBuilderTools builderTools;
 
-    static {
-        for (ComparisonOperatorProxy proxy : values()) {
-            CACHE.put(proxy.getOperator(), proxy);
-        }
-    }
 
-    ComparisonOperatorProxy(ComparisonOperator operator) {
-        this.operator = operator;
-    }
-
-    public static ComparisonOperatorProxy asEnum(ComparisonOperator operator) {
-        return CACHE.get(operator);
+    protected AbstractJpaVisitor(Class<? extends E> entityClass, RsqlJpaBuilderTools builderTools) {
+        this.entityClass = entityClass;
+        this.builderTools = builderTools;
     }
 }

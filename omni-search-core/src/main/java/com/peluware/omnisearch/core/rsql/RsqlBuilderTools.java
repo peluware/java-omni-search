@@ -21,36 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.jpa.rsql.builder;
+package com.peluware.omnisearch.core.rsql;
 
-import lombok.Data;
 
-@Data
-public class DefaultBuilderTools implements BuilderTools {
+public interface RsqlBuilderTools {
 
-    private PropertiesMapper propertiesMapper;
-    private ArgumentParser argumentParser;
-    private PredicateBuilder predicateBuilder;
+    RsqlBuilderTools DEFAULT = new DefaultRsqlBuilderTools();
 
-    public PropertiesMapper getPropertiesMapper() {
-        if (this.propertiesMapper == null) {
-            this.propertiesMapper = new DefaultPropertiesMapper();
-        }
-        return this.propertiesMapper;
-    }
+    /**
+     * Get a mapper for the attributes in RSQL queries.
+     *
+     * @return Mapper
+     */
+    RsqlAttributeMapper getAttributeMapper();
 
-    public ArgumentParser getArgumentParser() {
-        if (this.argumentParser == null) {
-            this.argumentParser = new DefaultArgumentParser();
-        }
-        return this.argumentParser;
-    }
 
-    public PredicateBuilder getPredicateBuilder() {
-        if (this.predicateBuilder == null) {
-            this.predicateBuilder = new DefaultPredicateBuilder();
-        }
-        return this.predicateBuilder;
-    }
+    /**
+     * Get a argument parser for casting types.
+     *
+     * @return ArgumentParser
+     */
+    RsqlArgumentParser getArgumentParser();
 
 }

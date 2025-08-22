@@ -14,7 +14,7 @@ import java.util.Set;
 public class OmniSearchBaseOptions {
 
     private String search = null;
-    private Set<String> joins = Set.of();
+    private Set<String> propagations = Set.of();
     private Node query = null;
 
     /**
@@ -31,22 +31,22 @@ public class OmniSearchBaseOptions {
     /**
      * Specifies the join associations to include in the query.
      *
-     * @param joins the set of entity associations to join
+     * @param propagations entities or sub-objects to propagate search in the query
      * @return the updated options
      */
-    public OmniSearchBaseOptions joins(@NotNull Set<String> joins) {
-        this.joins = joins;
+    public OmniSearchBaseOptions propagations(@NotNull Set<String> propagations) {
+        this.propagations = propagations;
         return this;
     }
 
     /**
      * Specifies the join associations using varargs.
      *
-     * @param joins the entity associations to join
+     * @param propagations entities o sub-objects to propagate search in the query
      * @return the updated options
      */
-    public OmniSearchBaseOptions joins(String @NotNull ... joins) {
-        return joins(Set.of(joins));
+    public OmniSearchBaseOptions propagations(String @NotNull ... propagations) {
+        return propagations(Set.of(propagations));
     }
 
     /**

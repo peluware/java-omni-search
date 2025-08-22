@@ -137,7 +137,7 @@ class JpaOmniSearchTest {
 
         var options = new OmniSearchOptions()
                 .search("Contact1")
-                .joins("contacts");
+                .propagations("contacts");
 
         List<User> result = omniSearch.search(User.class, options);
         assertEquals(1, result.size());

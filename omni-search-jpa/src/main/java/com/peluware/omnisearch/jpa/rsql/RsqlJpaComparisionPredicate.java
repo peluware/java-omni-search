@@ -21,33 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.jpa.rsql.builder;
+package com.peluware.omnisearch.jpa.rsql;
 
+import com.peluware.omnisearch.core.rsql.RsqlUnknowComparisionOperatorException;
+import cz.jirutka.rsql.parser.ast.ComparisonOperator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
 
-public interface BuilderTools {
+import java.util.List;
 
-    BuilderTools DEFAULT = new DefaultBuilderTools();
+public interface RsqlJpaComparisionPredicate {
 
-    /**
-     * Get a mapper for the properties.
-     *
-     * @return Mapper
-     */
-    PropertiesMapper getPropertiesMapper();
-
-
-    /**
-     * Get a argument parser for casting types.
-     *
-     * @return ArgumentParser
-     */
-    ArgumentParser getArgumentParser();
-
-
-    /**
-     * Get a predicate strategy for parsing Node into Predicate.
-     *
-     * @return PredicateBuilderStrategy
-     */
-    PredicateBuilder getPredicateBuilder();
+    Predicate buildComparisionPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, EntityManager manager) throws RsqlUnknowComparisionOperatorException;
 }

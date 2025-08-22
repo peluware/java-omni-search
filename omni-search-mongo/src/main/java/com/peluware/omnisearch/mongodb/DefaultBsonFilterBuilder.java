@@ -1,0 +1,216 @@
+package com.peluware.omnisearch.mongodb;
+
+import com.peluware.omnisearch.core.EnumSearchCandidate;
+import com.peluware.omnisearch.core.OmniSearchBaseOptions;
+import com.peluware.omnisearch.core.ParseNumber;
+import com.peluware.omnisearch.core.rsql.RsqlBuilderTools;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.time.Year;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+
+import static com.mongodb.client.model.Filters.*;
+
+/**
+ * Default implementation of the {@link BsonFilterBuilder} interface.
+ * Caches ClassModel instances for entity classes to optimize filter resolution.
+ */
+@Slf4j
+public class DefaultBsonFilterBuilder implements BsonFilterBuilder {
+
+    /**
+     * Pattern used to detect UUID values in string form.
+     */
+    private static final Pattern UUID_PATTERN = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+
+    /**
+     * Pattern used to detect MongoDB ObjectId values in string form.
+     */
+    private static final Pattern OBJECT_ID_PATTERN = Pattern.compile("^[0-9a-fA-F]{24}$");
+
+    private static final Map<Class<?>, List<Field>> BASIC_FIELDS = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<Field>> COMPLEX_FIELDS = new ConcurrentHashMap<>();
+
+    public static List<Field> getBasicFields(Class<?> clazz) {
+        return BASIC_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
+                .filter(field -> isBasicField(field) || isBasicCompositeField(field))
+                .toList());
+    }
+
+    public static List<Field> getComplexFields(Class<?> clazz) {
+        return COMPLEX_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
+                .filter(field -> !isBasicField(field) && !isBasicCompositeField(field))
+                .toList());
+    }
+
+    @Override
+    public <D> Bson resolveFilter(Class<D> documentClass, OmniSearchBaseOptions options, RsqlBuilderTools rsqlBuilderTools) {
+
+        Bson filters = new Document();
+
+        var search = options.getSearch();
+        if (search != null && !search.isBlank()) {
+            filters = searchInAllProperties(search, documentClass, options.getPropagations());
+        }
+
+        var conditions = options.getQuery();
+        if (conditions != null) {
+            // TODO: Implement query conditions via RSQL visitor
+            log.warn("RSQL query conditions are not yet implemented. Conditions: {}", conditions);
+        }
+
+        return filters;
+    }
+
+    @SuppressWarnings("java:S135")
+    private <D> Bson searchInAllProperties(String search, Class<D> documentClass, Set<String> propagations) {
+        // Search in direct properties
+        var searchFilters = new ArrayList<>(getSearchFilters(search, documentClass, ""));
+
+        // Search in propagated properties (nested documents and arrays)
+        for (var path : propagations) {
+
+            var field = getComplexFields(documentClass).stream()
+                    .filter(f -> f.getName().equals(path))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Propagation path '" + path + "' not found in class " + documentClass.getName()));
+
+            var fieldType = field.getType();
+
+            searchFilters.addAll(getSearchFilters(search, fieldType, path + "."));
+        }
+
+        return or(searchFilters);
+    }
+
+    /**
+     * Gets search filters for all searchable properties in a class model.
+     */
+    private static <D> Collection<Bson> getSearchFilters(String search, Class<D> clazz, String prefix) {
+        var filters = new ArrayList<Bson>();
+
+        for (var field : getBasicFields(clazz)) {
+            try {
+
+                var propertyName = prefix + field.getName();
+                var basicPredicates = getBasicPredicates(search, field.getType(), propertyName);
+
+                if (basicPredicates != null) {
+                    log.trace("Basic predicate created for property '{}' with value '{}'", propertyName, search);
+                    filters.add(basicPredicates);
+                    continue;
+                }
+
+                var fieldType = field.getType();
+                if (fieldType.isArray() || Collection.class.isAssignableFrom(fieldType)) {
+                    // For arrays or collections, we need to check the element type
+                    var elementType = getComponentElementType(field);
+                    if (elementType != null) {
+                        var basicFilter = getBasicPredicates(search, elementType, propertyName);
+                        if (basicFilter != null) {
+                            log.trace("Basic predicate created for array/collection property '{}' with value '{}'", propertyName, search);
+                            filters.add(basicFilter);
+                        }
+                    }
+                }
+
+            } catch (IllegalArgumentException e) {
+                log.trace("Could not parse search value '{}' for property '{}': {}", search, field.getName(), e.getMessage());
+            } catch (Exception e) {
+                log.trace("Could not create filter for property '{}': {}", field.getName(), e.getMessage());
+            }
+        }
+
+        return filters;
+    }
+
+    private static @Nullable Bson getBasicPredicates(String search, Class<?> type, String property) {
+        if (String.class.isAssignableFrom(type)) {
+            var pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
+            return regex(property, pattern);
+        }
+
+        if (UUID.class.isAssignableFrom(type) && UUID_PATTERN.matcher(search).matches()) {
+            return eq(property, UUID.fromString(search));
+        }
+
+        if ((Number.class.isAssignableFrom(type) || type.isPrimitive()) && search.matches("[+-]?\\d*\\.?\\d+")) {
+            for (var parser : ParseNumber.PARSERS) {
+                if (type.isAssignableFrom(parser.type())) {
+                    return eq(property, parser.parse(search));
+                }
+            }
+        }
+
+        if ((Boolean.class.isAssignableFrom(type) || type == boolean.class) && search.matches("(?i)true|false")) {
+            return eq(property, Boolean.parseBoolean(search.toLowerCase()));
+        }
+
+        if (Year.class.isAssignableFrom(type) && search.matches("\\d{4}")) {
+            return eq(property, Year.parse(search));
+        }
+
+        if (ObjectId.class.isAssignableFrom(type) && OBJECT_ID_PATTERN.matcher(search).matches()) {
+            return eq(property, new ObjectId(search));
+        }
+
+        if (type.isEnum()) {
+            @SuppressWarnings("unchecked")
+            var candidates = EnumSearchCandidate.collectEnumCandidates((Class<? extends Enum<?>>) type, search);
+            if (candidates.isEmpty()) {
+                return null;
+            }
+            return in(property, candidates);
+        }
+
+        return null;
+    }
+
+    private static Class<?> getComponentElementType(Field field) {
+        Class<?> type = field.getType();
+
+        if (type.isArray()) {
+            return type.getComponentType();
+        }
+        if (Collection.class.isAssignableFrom(type)) {
+            Type genericType = field.getGenericType();
+            if (genericType instanceof ParameterizedType paramType) {
+                Type[] typeArgs = paramType.getActualTypeArguments();
+                if (typeArgs.length > 0 && typeArgs[0] instanceof Class<?> classType) {
+                    return classType;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean isBasicType(Class<?> type) {
+        return String.class.isAssignableFrom(type) ||
+                UUID.class.isAssignableFrom(type) ||
+                Number.class.isAssignableFrom(type) ||
+                type.isPrimitive() ||
+                Boolean.class.isAssignableFrom(type) ||
+                Year.class.isAssignableFrom(type) ||
+                ObjectId.class.isAssignableFrom(type) ||
+                type.isEnum();
+    }
+
+    private static boolean isBasicField(Field field) {
+        return isBasicType(field.getType());
+    }
+
+    private static boolean isBasicCompositeField(Field field) {
+        var type = field.getType();
+        return (type.isArray() || Collection.class.isAssignableFrom(type)) && isBasicType(getComponentElementType(field));
+    }
+
+}

@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.jpa.rsql.builder;
+package com.peluware.omnisearch.core.rsql;
 
 /**
- * Provides mapping of selectors in RSQL to property names of entities.
+ * Provides mapping of selectors in RSQL to attributes names of entities.
  *
  * @author Jakub Jirutka <jakub@jirutka.cz>
  */
-public interface PropertiesMapper {
+public interface RsqlAttributeMapper {
 
     /**
      * Translate given selector to the mapped property name or dot-separated
@@ -38,6 +38,6 @@ public interface PropertiesMapper {
      * @param entityClass entity class
      * @return Property name or dot-separated path of the property.
      */
-    String translate(String selector, Class<?> entityClass);
+    String map(String selector, Class<?> entityClass);
 
 }

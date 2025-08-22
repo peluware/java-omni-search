@@ -41,6 +41,7 @@
     <modules>
         <module>omni-search-core</module>
         <module>omni-search-jpa</module>
+        <module>omni-search-mongo</module>
     </modules>
 
     <properties>

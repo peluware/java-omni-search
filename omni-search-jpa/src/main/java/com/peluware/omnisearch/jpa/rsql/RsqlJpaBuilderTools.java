@@ -21,24 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.jpa.rsql.builder;
+package com.peluware.omnisearch.jpa.rsql;
 
-import cz.jirutka.rsql.parser.ast.Node;
-import com.peluware.omnisearch.jpa.rsql.EntityManagerAdapter;
-import jakarta.persistence.criteria.From;
-import jakarta.persistence.criteria.Predicate;
 
-public interface PredicateBuilder {
+import com.peluware.omnisearch.core.rsql.RsqlBuilderTools;
+
+public interface RsqlJpaBuilderTools extends RsqlBuilderTools {
+
+    RsqlJpaBuilderTools DEFAULT = new DefaultRsqlJpaBuilderTools();
 
     /**
-     * Create a Predicate from the RSQL AST node.
+     * Get a predicate strategy for parsing Node into Predicate.
      *
-     * @param node       RSQL AST node.
-     * @param entity     The main entity of the query.
-     * @param manager     JPA EntityManager.
-     * @param tools      Builder tools facade.
-     * @return Predicate a predicate representation of the Node.
-     * @throws IllegalArgumentException When illegal arguments are found.
+     * @return PredicateBuilderStrategy
      */
-    <T> Predicate createPredicate(Node node, From<?, ?> root, Class<T> entity, EntityManagerAdapter manager, BuilderTools tools) throws IllegalArgumentException;
+    RsqlJpaComparisionPredicate getComparisionPredicateBuilder();
 }

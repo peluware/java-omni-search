@@ -1,7 +1,6 @@
-package com.peluware.omnisearch.jpa.rsql.builder;
+package com.peluware.omnisearch.core.rsql;
 
 
-import com.peluware.omnisearch.jpa.rsql.RsqlArgumentFormatException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +23,12 @@ import java.util.function.Function;
  * @author luidmidev
  */
 @Slf4j
-public class DefaultArgumentParser implements ArgumentParser {
+public class DefaultRsqlArgumentParser implements RsqlArgumentParser {
 
 
     @Getter
     @Setter
-    private static DefaultArgumentParser instance = new DefaultArgumentParser();
+    private static DefaultRsqlArgumentParser instance = new DefaultRsqlArgumentParser();
 
 
     // Date formatters for flexible parsing
@@ -58,7 +57,7 @@ public class DefaultArgumentParser implements ArgumentParser {
     // Custom parsers registry
     protected final Map<Class<?>, Function<String, ?>> customParsers = new ConcurrentHashMap<>();
 
-    public DefaultArgumentParser() {
+    public DefaultRsqlArgumentParser() {
         registerDefaultParsers();
     }
 
