@@ -10,6 +10,7 @@ import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
 import com.peluware.omnisearch.core.OmniSearchOptions;
 
+import cz.jirutka.rsql.parser.RSQLParser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -348,21 +349,29 @@ class MongoOmniSearchTest {
     }
 
     @Test
-    @DisplayName("Should use custom collection name resolver")
-    void testCustomCollectionNameResolver() {
-        // Change collection name resolver to use lowercase
-        omniSearch.setCollectionNameResolver(clazz -> clazz.getSimpleName().toLowerCase());
-
-        // Insert data into lowercase collection
-        var collection = database.getCollection("product", Product.class);
-        var testProduct = new Product("Test Product", "Description", 99.99, 1, true);
-        collection.insertOne(testProduct);
-
+    @DisplayName("Should search using RSQL query (price > 100)")
+    void testWithRsqlPriceGt100() {
         var options = new OmniSearchOptions()
-                .search("Test");
+                .query(new RSQLParser().parse("price>100"));
 
         var results = omniSearch.search(Product.class, options);
 
-        assertFalse(results.isEmpty());
+        assertEquals(3, results.size()); // Should return 3 products with price > 100
+        var names = results.stream().map(Product::getName).toList();
+        assertTrue(names.contains("Gaming Laptop"));
+        assertTrue(names.contains("Office Chair"));
+        assertTrue(names.contains("4K Monitor"));
+    }
+
+    @Test
+    @DisplayName("Should search using RSQL query (price == 89.99)")
+    void testWithRsqlPriceEq89_99() {
+        var options = new OmniSearchOptions()
+                .query(new RSQLParser().parse("price==89.99"));
+
+        var results = omniSearch.search(Product.class, options);
+
+        assertEquals(1, results.size()); // Should return 1 product with price == 89.99
+        assertEquals("Mechanical Keyboard", results.getFirst().getName());
     }
 }

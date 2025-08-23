@@ -2,15 +2,17 @@ package com.peluware.omnisearch.mongodb;
 
 import lombok.experimental.UtilityClass;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
 import java.time.Year;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
 @UtilityClass
-public class ReflectUtils {
+public class ReflectionUtils {
 
     public static Class<?> getComponentElementType(Field field) {
         var type = field.getType();
@@ -51,5 +53,32 @@ public class ReflectUtils {
             return false;
         }
         return isBasicType(componentType);
+    }
+
+    public static Optional<String> getAnotationStringValue(AnnotatedElement annotatedElement, Class<?> annotationClass, Method valueAccesor) {
+        try {
+            @SuppressWarnings("unchecked")
+            var annotation = annotatedElement.getAnnotation((Class<? extends Annotation>) annotationClass);
+            if (annotation != null) {
+                String value = (String) valueAccesor.invoke(annotation);
+
+                if (value != null && !value.isBlank()) {
+                    return Optional.of(value);
+                }
+            }
+        } catch (Exception e) {
+            // Silently ignore reflection errors
+        }
+
+        return Optional.empty();
+    }
+
+    public static @Nullable Method tryGetMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+        try {
+            return clazz.getMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            // Method not found, return null
+            return null;
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.peluware.omnisearch.mongodb.rsql;
 
-import com.mongodb.client.model.Filters;
 import com.peluware.omnisearch.core.rsql.RsqlUnknowComparisionOperatorException;
 import cz.jirutka.rsql.parser.ast.ComparisonOperator;
 import cz.jirutka.rsql.parser.ast.RSQLOperators;
@@ -39,10 +38,10 @@ public class DefaultRsqlMongoComparisionFilterBuilder implements RsqlMongoCompar
             return lte(path, arguments.getFirst());
         }
         if (RSQLOperators.IN.equals(operator)) {
-            return Filters.in(path, arguments);
+            return in(path, arguments);
         }
         if (RSQLOperators.NOT_IN.equals(operator)) {
-            return Filters.nin(path, arguments);
+            return nin(path, arguments);
         }
 
         throw new RsqlUnknowComparisionOperatorException(operator);

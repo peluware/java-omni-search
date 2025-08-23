@@ -4,7 +4,6 @@ import com.peluware.omnisearch.core.EnumSearchCandidate;
 import com.peluware.omnisearch.core.OmniSearchBaseOptions;
 import com.peluware.omnisearch.core.ParseNumber;
 import com.peluware.omnisearch.mongodb.resolvers.PropertyNameResolver;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -24,7 +23,6 @@ import static com.mongodb.client.model.Filters.*;
  * Caches ClassModel instances for entity classes to optimize filter resolution.
  */
 @Slf4j
-@RequiredArgsConstructor
 public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilterBuilder {
 
     /**
@@ -42,21 +40,16 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
 
     protected static List<Field> getBasicFields(Class<?> clazz) {
         return BASIC_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
-                .filter(field -> ReflectUtils.isBasicField(field) || ReflectUtils.isBasicCompositeField(field))
+                .filter(field -> ReflectionUtils.isBasicField(field) || ReflectionUtils.isBasicCompositeField(field))
                 .toList());
     }
 
     protected static List<Field> getComplexFields(Class<?> clazz) {
         return COMPLEX_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
-                .filter(field -> !ReflectUtils.isBasicField(field) && !ReflectUtils.isBasicCompositeField(field))
+                .filter(field -> !ReflectionUtils.isBasicField(field) && !ReflectionUtils.isBasicCompositeField(field))
                 .toList());
     }
 
-    protected final PropertyNameResolver propertyNameResolver;
-
-    public DefaultMongoOmniSearchFilterBuilder() {
-        this(PropertyNameResolver.DEFAULT);
-    }
 
     @Override
     public <D> Bson buildFilter(Class<D> documentClass, OmniSearchBaseOptions options) {
@@ -85,7 +78,7 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
                     .orElseThrow(() -> new IllegalArgumentException("Propagation path '" + path + "' not found in class " + documentClass.getName()));
 
             var fieldType = field.getType();
-            var pathName = propertyNameResolver.resolvePropertyName(field);
+            var pathName = PropertyNameResolver.resolvePropertyName(field);
 
             searchFilters.addAll(getSearchFilters(search, fieldType, pathName + "."));
         }
@@ -102,7 +95,7 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
         for (var field : getBasicFields(clazz)) {
             try {
 
-                var originalPropertyName = propertyNameResolver.resolvePropertyName(field);
+                var originalPropertyName = PropertyNameResolver.resolvePropertyName(field);
                 var propertyName = prefix + originalPropertyName;
                 var basicPredicates = getBasicPredicates(search, field.getType(), propertyName);
 
@@ -115,7 +108,7 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
                 var fieldType = field.getType();
                 if (fieldType.isArray() || Collection.class.isAssignableFrom(fieldType)) {
                     // For arrays or collections, we need to check the element type
-                    var elementType = ReflectUtils.getComponentElementType(field);
+                    var elementType = ReflectionUtils.getComponentElementType(field);
                     if (elementType != null) {
                         var basicFilter = getBasicPredicates(search, elementType, propertyName);
                         if (basicFilter != null) {

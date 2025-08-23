@@ -31,9 +31,9 @@ public interface RsqlMongoBuilderOptions extends RsqlBuilderOptions {
     RsqlMongoBuilderOptions DEFAULT = new DefaultRsqlMongoBuilderOptions();
 
     /**
-     * Get a predicate strategy for parsing Node into Predicate.
+     * Get a filter builder for comparison operations.
      *
-     * @return PredicateBuilderStrategy
+     * @return the comparison filter builder
      */
     RsqlMongoComparisionFilterBuilder getComparisionFilterBuilder();
 }

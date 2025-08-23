@@ -1,7 +1,7 @@
 package com.peluware.omnisearch.mongodb.rsql;
 
 import com.peluware.omnisearch.mongodb.resolvers.PropertyNameResolver;
-import com.peluware.omnisearch.mongodb.ReflectUtils;
+import com.peluware.omnisearch.mongodb.ReflectionUtils;
 import cz.jirutka.rsql.parser.ast.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
 
     private final Class<T> documentClass;
     private final RsqlMongoBuilderOptions builderOptions;
-    private final PropertyNameResolver propertyNameResolver;
 
     @Override
     public Bson visit(AndNode node, Void param) {
@@ -80,14 +79,14 @@ public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
                 var fieldType = field.getType();
 
                 currentClass = (fieldType.isArray() || Collection.class.isAssignableFrom(fieldType))
-                        ? ReflectUtils.getComponentElementType(field)
+                        ? ReflectionUtils.getComponentElementType(field)
                         : fieldType;
 
                 if (currentClass == null) {
                     throw new IllegalArgumentException("Could not resolve type for field: " + attribute + " in class: " + clazz.getName());
                 }
 
-                paths.add(propertyNameResolver.resolvePropertyName(field));
+                paths.add(PropertyNameResolver.resolvePropertyName(field));
 
             } catch (NoSuchFieldException e) {
                 log.trace("Field '{}' not found in class '{}'.", attribute, currentClass.getName());

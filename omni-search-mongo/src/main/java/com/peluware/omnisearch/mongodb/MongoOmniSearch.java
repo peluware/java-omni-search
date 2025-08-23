@@ -5,7 +5,6 @@ import com.peluware.omnisearch.core.OmniSearchBaseOptions;
 import com.peluware.omnisearch.core.OmniSearchOptions;
 import com.mongodb.client.MongoDatabase;
 import com.peluware.omnisearch.mongodb.resolvers.CollectionNameResolver;
-import com.peluware.omnisearch.mongodb.resolvers.PropertyNameResolver;
 import com.peluware.omnisearch.mongodb.rsql.MongoFilterVisitor;
 import com.peluware.omnisearch.mongodb.rsql.RsqlMongoBuilderOptions;
 import lombok.RequiredArgsConstructor;
@@ -40,19 +39,13 @@ public class MongoOmniSearch implements OmniSearch {
     }
 
     @Setter
-    private CollectionNameResolver collectionNameResolver = CollectionNameResolver.DEFAULT;
-
-    @Setter
-    private PropertyNameResolver propertyNameResolver = PropertyNameResolver.DEFAULT;
-
-    @Setter
     private MongoOmniSearchFilterBuilder filterBuilder = MongoOmniSearchFilterBuilder.DEFAULT;
 
 
     @Override
     public <E> List<E> search(Class<E> entityClass, OmniSearchOptions options) {
 
-        var collectionName = collectionNameResolver.resolveCollectionName(entityClass);
+        var collectionName = CollectionNameResolver.resolveCollectionName(entityClass);
         var collection = database.getCollection(collectionName, entityClass);
 
         var filter = buildFilter(entityClass, options);
@@ -95,7 +88,7 @@ public class MongoOmniSearch implements OmniSearch {
     @Override
     public <E> long count(Class<E> entityClass, OmniSearchBaseOptions options) {
 
-        var collectionName = collectionNameResolver.resolveCollectionName(entityClass);
+        var collectionName = CollectionNameResolver.resolveCollectionName(entityClass);
         var collection = database.getCollection(collectionName, entityClass);
 
         var filter = buildFilter(entityClass, options);
@@ -110,7 +103,7 @@ public class MongoOmniSearch implements OmniSearch {
         var filter = filterBuilder.buildFilter(entityClass, options);
         var query = options.getQuery();
         if (query != null) {
-            var rsqlFilter = query.accept(new MongoFilterVisitor<>(entityClass, rsqlBuilderOptions, propertyNameResolver), null);
+            var rsqlFilter = query.accept(new MongoFilterVisitor<>(entityClass, rsqlBuilderOptions), null);
             filter = and(filter, rsqlFilter);
         }
         return filter;
