@@ -5,20 +5,5 @@
         <class>com.peluware.omnisearch.jpa.entities.Country</class>
         <class>com.peluware.omnisearch.jpa.entities.House</class>
         <class>com.peluware.omnisearch.jpa.entities.Contacts</class>
-        <!-- agrega más clases aquí si las usas -->
-
-        <properties>
-
-            <property name="jakarta.persistence.provider" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
-
-            <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>
-            <property name="jakarta.persistence.jdbc.user" value="sa"/>
-            <property name="jakarta.persistence.jdbc.password" value=""/>
-
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-            <property name="hibernate.show_sql" value="true"/>
-        </properties>
     </persistence-unit>
 </persistence>

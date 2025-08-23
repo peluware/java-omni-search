@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.peluware</groupId>
         <artifactId>omni-search</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>omni-search-jpa</artifactId>
@@ -30,13 +30,22 @@
         <dependency>
             <groupId>com.peluware</groupId>
             <artifactId>omni-search-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
+
+        <!-- Testcontainers -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.21.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Driver PostgreSQL -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.7</version>
             <scope>test</scope>
         </dependency>
 

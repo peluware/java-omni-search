@@ -64,7 +64,7 @@ Make sure your `pom.xml` contains the following dependencies:
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -75,7 +75,18 @@ Make sure your `pom.xml` contains the following dependencies:
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-jpa</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
+</dependency>
+```
+
+### MongoDB Module
+
+```xml
+
+<dependency>
+    <groupId>com.peluware</groupId>
+    <artifactId>omni-search-mongodb</artifactId>
+    <version>1.0.1</version>
 </dependency>
 ```
 

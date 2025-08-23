@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.peluware</groupId>
         <artifactId>omni-search</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>omni-search-mongo</artifactId>
@@ -24,7 +24,6 @@
         <dependency>
             <groupId>com.peluware</groupId>
             <artifactId>omni-search-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -34,13 +33,6 @@
         </dependency>
 
         <!-- TEST -->
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>1.21.3</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
