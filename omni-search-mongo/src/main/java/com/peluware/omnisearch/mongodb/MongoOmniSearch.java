@@ -99,7 +99,7 @@ public class MongoOmniSearch implements OmniSearch {
         return collection.countDocuments(filter);
     }
 
-    private <E> Bson buildFilter(Class<E> entityClass, OmniSearchBaseOptions options) {
+    public <E> Bson buildFilter(Class<E> entityClass, OmniSearchBaseOptions options) {
         var filter = filterBuilder.buildFilter(entityClass, options);
         var query = options.getQuery();
         if (query != null) {

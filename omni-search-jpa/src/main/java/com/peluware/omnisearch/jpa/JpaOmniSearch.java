@@ -114,7 +114,7 @@ public class JpaOmniSearch implements OmniSearch {
         return em.createQuery(query).getSingleResult();
     }
 
-    private <E> Predicate buildPredicate(Root<E> root, CriteriaBuilder cb, OmniSearchBaseOptions options) {
+    public <E> Predicate buildPredicate(Root<E> root, CriteriaBuilder cb, OmniSearchBaseOptions options) {
         var predicate = predicateBuilder.buildPredicate(em, root, options);
         var query = options.getQuery();
         if (query != null) {

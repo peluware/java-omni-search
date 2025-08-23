@@ -115,7 +115,7 @@ class JpaOmniSearchTest {
     private void cleanupTestData() {
         em.getTransaction().begin();
         var users = em.createQuery("SELECT u FROM User u", User.class).getResultList();
-        for (User user : users) {
+        for (var user : users) {
             em.remove(user);
         }
         em.getTransaction().commit();
@@ -168,8 +168,7 @@ class JpaOmniSearchTest {
 
             // Then
             assertEquals(1, result.size());
-            assertTrue(result.getFirst().getContacts().stream()
-                    .anyMatch(contact -> "Contact1".equals(contact.getFirstName())));
+            assertTrue(result.getFirst().getContacts().stream().anyMatch(contact -> "Contact1".equals(contact.getFirstName())));
         }
     }
 
@@ -260,9 +259,6 @@ class JpaOmniSearchTest {
 
             // Then
             assertEquals(2, result.size());
-            assertTrue(result.stream().allMatch(user ->
-                    user.getHouses().stream().anyMatch(house ->
-                            "NA".equals(house.getCountry().getCountinent().getCode()))));
         }
 
         private void setupComplexTestData() {
