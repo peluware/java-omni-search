@@ -89,6 +89,7 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
     /**
      * Gets search filters for all searchable properties in a class model.
      */
+    @SuppressWarnings("java:S3776")
     protected <D> Collection<Bson> getSearchFilters(String search, Class<D> clazz, String prefix) {
         var filters = new ArrayList<Bson>();
 
@@ -128,6 +129,7 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
         return filters;
     }
 
+    @SuppressWarnings("java:S3776")
     protected static @Nullable Bson getBasicPredicates(String search, Class<?> type, String property) {
         if (String.class.isAssignableFrom(type)) {
             var pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);

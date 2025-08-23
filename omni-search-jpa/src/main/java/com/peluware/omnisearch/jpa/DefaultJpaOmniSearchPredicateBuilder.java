@@ -74,6 +74,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
      * @param em     the {@link EntityManager}
      * @return a collection of predicates matching the search keyword
      */
+    @SuppressWarnings("java:S3776")
     protected Collection<Predicate> getSearchPredicates(String search, Path<?> path, EntityManager em) {
         var javaType = path.getJavaType();
         var managedType = em.getMetamodel().managedType(javaType);
@@ -121,6 +122,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
      * @param em     the entity manager
      * @return a collection of predicates
      */
+    @SuppressWarnings("java:S3776")
     protected @Nullable Predicate getBasicPredicates(String search, Path<?> path, EntityManager em) {
         var type = path.getJavaType();
         var cb = em.getCriteriaBuilder();
