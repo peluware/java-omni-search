@@ -5,12 +5,11 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.peluware.omnisearch.mongodb.ReflectionUtils.resolveFieldType;
 import static com.peluware.omnisearch.mongodb.ReflectionUtils.resolveComponentFieldType;
 
-public class Main {
+public class ScratchForTypes {
 
     @Data
     abstract static class Base<T> {
@@ -51,7 +50,7 @@ public class Main {
 
         System.out.println("Field 'value' resolved type: " + resolveFieldType(field1, Derived.class).getName());
         System.out.println("Field 'list' resolved type: " + resolveFieldType(field2, Derived.class).getName());
-        System.out.println("Field 'list<T>' component type: " + Objects.requireNonNull(resolveComponentFieldType(field2, Derived.class)).getName());
+        System.out.println("Field 'list<T>' component type: " + resolveComponentFieldType(field2, Derived.class).getName());
         System.out.println("Field 'map' resolved type: " + resolveFieldType(field3, Derived.class).getName());
     }
 
@@ -63,9 +62,9 @@ public class Main {
 
         System.out.println("Field 'value' resolved type: " + resolveFieldType(field1, AnotherDerived.class).getName());
         System.out.println("Field 'list' resolved type: " + resolveFieldType(field2, AnotherDerived.class).getName());
-        System.out.println("Field 'list<T>' component type: " + Objects.requireNonNull(resolveComponentFieldType(field2, AnotherDerived.class)).getName());
+        System.out.println("Field 'list<T>' component type: " + resolveComponentFieldType(field2, AnotherDerived.class).getName());
         System.out.println("Field 'anotherValue' resolved type: " + resolveFieldType(field3, AnotherDerived.class).getName());
         System.out.println("Field 'anotherList' resolved type: " + resolveFieldType(field4, AnotherDerived.class).getName());
-        System.out.println("Field 'anotherList<T>' component type: " + Objects.requireNonNull(resolveComponentFieldType(field4, AnotherDerived.class)).getName());
+        System.out.println("Field 'anotherList<T>' component type: " + resolveComponentFieldType(field4, AnotherDerived.class).getName());
     }
 }

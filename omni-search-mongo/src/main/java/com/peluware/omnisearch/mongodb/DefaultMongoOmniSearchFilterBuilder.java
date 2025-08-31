@@ -40,13 +40,13 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
 
     protected static List<Field> getBasicFields(Class<?> clazz) {
         return BASIC_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
-                .filter(field -> ReflectionUtils.isBasicField(field) || ReflectionUtils.isBasicCompositeField(field))
+                .filter(field -> ReflectionUtils.isBasicField(field, clazz) || ReflectionUtils.isBasicCompositeField(field, clazz))
                 .toList());
     }
 
     protected static List<Field> getComplexFields(Class<?> clazz) {
         return COMPLEX_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
-                .filter(field -> !ReflectionUtils.isBasicField(field) && !ReflectionUtils.isBasicCompositeField(field))
+                .filter(field -> !ReflectionUtils.isBasicField(field, clazz) && !ReflectionUtils.isBasicCompositeField(field, clazz))
                 .toList());
     }
 
@@ -109,13 +109,11 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
                 var fieldType = field.getType();
                 if (fieldType.isArray() || Collection.class.isAssignableFrom(fieldType)) {
                     // For arrays or collections, we need to check the element type
-                    var elementType = ReflectionUtils.getComponentElementType(field);
-                    if (elementType != null) {
-                        var basicFilter = getBasicPredicates(search, elementType, propertyName);
-                        if (basicFilter != null) {
-                            log.trace("Basic predicate created for array/collection property '{}' with value '{}'", propertyName, search);
-                            filters.add(basicFilter);
-                        }
+                    var elementType = ReflectionUtils.resolveComponentFieldType(field, clazz);
+                    var basicFilter = getBasicPredicates(search, elementType, propertyName);
+                    if (basicFilter != null) {
+                        log.trace("Basic predicate created for array/collection property '{}' with value '{}'", propertyName, search);
+                        filters.add(basicFilter);
                     }
                 }
 

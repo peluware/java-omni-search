@@ -5,9 +5,9 @@ import com.peluware.omnisearch.mongodb.ReflectionUtils;
 import cz.jirutka.rsql.parser.ast.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bson.conversions.Bson;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,8 +22,8 @@ public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
     private final Class<T> documentClass;
     private final RsqlMongoBuilderOptions builderOptions;
 
-    // Cache para evitar reflexión repetida
-    private final Map<String, Map<String, Field>> classFieldsCache = new HashMap<>();
+    // Cache simple para evitar reflexión repetida
+    private final Map<String, FieldPath> fieldPathCache = new HashMap<>();
 
     @Override
     public Bson visit(AndNode node, Void param) {
@@ -73,108 +73,57 @@ public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
     }
 
     protected FieldPath findFieldType(String originalPath, Class<?> clazz) {
+        // Usar cache
+        var cacheKey = clazz.getName() + "#" + originalPath;
+        var cached = fieldPathCache.get(cacheKey);
+        if (cached != null) {
+            return cached;
+        }
+
         var graph = originalPath.split("\\.");
         var currentClass = clazz;
         var paths = new ArrayList<String>();
 
         for (var attribute : graph) {
-            var field = findFieldInClassHierarchy(currentClass, attribute);
+            // Usar Apache Commons FieldUtils - maneja herencia automáticamente
+            var field = FieldUtils.getField(currentClass, attribute, true);
 
             if (field == null) {
-                log.warn("Field '{}' not found in class hierarchy of '{}'", attribute, currentClass.getName());
+                log.trace("Field '{}' not found in class hierarchy of '{}'", attribute, currentClass.getName());
                 throw new IllegalArgumentException(String.format("Field '%s' not found in class hierarchy of '%s'", attribute, currentClass.getName()));
             }
 
-            var fieldType = field.getType();
-            currentClass = (fieldType.isArray() || Collection.class.isAssignableFrom(fieldType))
-                    ? ReflectionUtils.getComponentElementType(field)
-                    : fieldType;
+            // Resolver tipo usando Apache Commons TypeUtils para manejo de genéricos
+            var resolvedClass = ReflectionUtils.resolveFieldType(field, currentClass);
 
-            if (currentClass == null) {
-                throw new IllegalArgumentException(String.format("Could not resolve type for field: '%s' in class: '%s'", attribute, clazz.getName()));
-            }
+            currentClass = (resolvedClass.isArray() || Collection.class.isAssignableFrom(resolvedClass))
+                    ? ReflectionUtils.resolveComponentFieldType(field, currentClass)
+                    : resolvedClass;
 
             paths.add(PropertyNameResolver.resolvePropertyName(field));
             log.trace("Resolved field '{}' to path '{}' with type '{}'", attribute, paths.getLast(), currentClass.getName());
         }
 
         var resolvedPath = String.join(".", paths);
-        log.debug("Resolved full path '{}' to '{}' with final type '{}'",
-                originalPath, resolvedPath, currentClass.getName());
+        var result = new FieldPath(resolvedPath, currentClass);
 
-        return new FieldPath(resolvedPath, currentClass);
+        // Cache del resultado
+        fieldPathCache.put(cacheKey, result);
+
+        log.debug("Resolved full path '{}' to '{}' with final type '{}'", originalPath, resolvedPath, currentClass.getName());
+
+        return result;
     }
+
 
     /**
-     * Busca un campo en toda la jerarquía de clases, incluyendo clases padre.
-     * Utiliza caché para optimizar búsquedas repetidas.
+     * Limpia el cache. Útil para tests.
      */
-    private Field findFieldInClassHierarchy(Class<?> clazz, String fieldName) {
-        var className = clazz.getName();
-
-        // Verificar cache primero
-        var cachedFields = classFieldsCache.computeIfAbsent(className, k -> new HashMap<>());
-        if (cachedFields.containsKey(fieldName)) {
-            return cachedFields.get(fieldName);
-        }
-
-        // Buscar en la jerarquía de clases
-        Field field = null;
-        Class<?> currentClass = clazz;
-
-        while (currentClass != null && field == null) {
-            try {
-                field = currentClass.getDeclaredField(fieldName);
-                log.trace("Found field '{}' in class '{}'", fieldName, currentClass.getName());
-            } catch (NoSuchFieldException e) {
-                log.trace("Field '{}' not found in class '{}', checking parent class", fieldName, currentClass.getName());
-                currentClass = currentClass.getSuperclass();
-            }
-        }
-
-        // Cache del resultado (incluso si es null para evitar búsquedas futuras)
-        cachedFields.put(fieldName, field);
-
-        return field;
+    public void clearCache() {
+        fieldPathCache.clear();
+        log.debug("Field path cache cleared");
     }
 
-    /**
-     * Obtiene todos los campos de una clase incluyendo los heredados.
-     * Útil para debugging o validaciones adicionales.
-     */
-    protected Map<String, Field> getAllFieldsFromHierarchy(Class<?> clazz) {
-        var className = clazz.getName();
-        var cachedFields = classFieldsCache.get(className);
-
-        if (cachedFields != null && !cachedFields.isEmpty()) {
-            return new HashMap<>(cachedFields);
-        }
-
-        var allFields = new HashMap<String, Field>();
-        Class<?> currentClass = clazz;
-
-        while (currentClass != null) {
-            Field[] fields = currentClass.getDeclaredFields();
-            for (Field field : fields) {
-                // Solo agregar si no existe ya (los campos de clases hijas tienen precedencia)
-                allFields.putIfAbsent(field.getName(), field);
-            }
-            currentClass = currentClass.getSuperclass();
-        }
-
-        // Actualizar cache
-        classFieldsCache.put(className, new HashMap<>(allFields));
-
-        return allFields;
-    }
-
-    /**
-     * Limpia el cache de campos. Útil para tests o cuando las clases cambian dinámicamente.
-     */
-    public void clearFieldsCache() {
-        classFieldsCache.clear();
-        log.debug("Fields cache cleared");
-    }
 
     protected record FieldPath(String path, Class<?> type) {
     }

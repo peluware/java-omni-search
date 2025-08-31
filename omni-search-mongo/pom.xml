@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.peluware</groupId>
         <artifactId>omni-search</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4</version>
     </parent>
 
     <artifactId>omni-search-mongo</artifactId>
@@ -30,6 +30,12 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>5.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
         </dependency>
 
         <!-- TEST -->
