@@ -27,6 +27,7 @@ import cz.jirutka.rsql.parser.ast.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Attribute;
+import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
 import jakarta.persistence.metamodel.ManagedType;
 import jakarta.persistence.metamodel.PluralAttribute;
 import lombok.extern.slf4j.Slf4j;
@@ -111,33 +112,44 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
 
         var metaModel = entityManager.getMetamodel();
         var classMetadata = metaModel.managedType(startRoot.getJavaType());
-
         var currentRoot = startRoot;
 
-        for (var attribute : graph) {
+        var graphLength = graph.length;
+        for (int i = 0; i < graphLength; i++) {
+            var attribute = graph[i];
 
-            if (!hasProperty(attribute, classMetadata)) {
+            if (!hasAttribute(attribute, classMetadata)) {
                 throw new IllegalArgumentException("Unknown property: " + attribute + " From<?,?> entity " + classMetadata.getJavaType().getName());
             }
 
-            if (isAssociationType(attribute, classMetadata)) {
-                var associationType = findPropertyType(attribute, classMetadata);
-                classMetadata = metaModel.managedType(associationType);
+            var jpaAttribute = classMetadata.getAttribute(attribute);
+            var persistentAttributeType = jpaAttribute.getPersistentAttributeType();
+            var type = getSingularType(jpaAttribute);
 
-                if (currentRoot instanceof From<?, ?> from) {
-                    currentRoot = from.join(attribute);
-                } else {
-                    log.warn("Root is not a From<?, ?> type, cannot create join for property {}. Using get() instead.", attribute);
-                    currentRoot = currentRoot.get(attribute);
-                }
-            } else {
-                log.trace("Create property path for type {} property {}.", classMetadata.getJavaType().getName(), attribute);
+            if (jpaAttribute.isAssociation()) {
+
+                classMetadata = metaModel.managedType(type);
+                currentRoot = ((From<?, ?>) currentRoot).join(attribute);
+
+            } else if (persistentAttributeType == PersistentAttributeType.EMBEDDED) {
+
+                classMetadata = metaModel.embeddable(type);
                 currentRoot = currentRoot.get(attribute);
 
-                if (isEmbeddedType(attribute, classMetadata)) {
-                    var embeddedType = findPropertyType(attribute, classMetadata);
-                    classMetadata = metaModel.managedType(embeddedType);
+            } else if (persistentAttributeType == PersistentAttributeType.ELEMENT_COLLECTION) {
+
+                currentRoot = ((From<?, ?>) currentRoot).join(attribute);
+                if (i != graphLength - 1) {
+                    throw new IllegalArgumentException("ElementCollection must be the last part of the path: " + path);
                 }
+
+            } else if (persistentAttributeType == PersistentAttributeType.BASIC) {
+
+                currentRoot = currentRoot.get(attribute);
+                if (i != graphLength - 1) {
+                    throw new IllegalArgumentException("Basic attribute must be the last part of the path: " + path);
+                }
+
             }
         }
 
@@ -151,7 +163,7 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
      * @param classMetadata  Class metamodel that may hold that property.
      * @return               <tt>true</tt> if the class has that property, <tt>false</tt> otherwise.
      */
-    protected <E> boolean hasProperty(String property, ManagedType<E> classMetadata) {
+    protected <E> boolean hasAttribute(String property, ManagedType<E> classMetadata) {
         Set<Attribute<? super E, ?>> names = classMetadata.getAttributes();
         for (Attribute<? super E, ?> name : names) {
             if (name.getName().equals(property)) return true;
@@ -163,39 +175,13 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
      * Get the property Type out of the metamodel.
      *
      * @param property       Property name for type extraction.
-     * @param classMetadata  Reference class metamodel that holds property type.
      * @return Class java type for the property,
      * 						 if the property is a pluralAttribute it will take the bindable java type of that collection.
      */
-    protected <E> Class<?> findPropertyType(String property, ManagedType<E> classMetadata) {
-        if (classMetadata.getAttribute(property).isCollection()) {
-            return ((PluralAttribute<?, ?, ?>) classMetadata.getAttribute(property)).getBindableJavaType();
+    protected Class<?> getSingularType(Attribute<?, ?> property) {
+        if (property.isCollection()) {
+            return ((PluralAttribute<?, ?, ?>) property).getBindableJavaType();
         }
-        return classMetadata.getAttribute(property).getJavaType();
+        return property.getJavaType();
     }
-
-
-    /**
-     * Verify if a property is an Association type.
-     *
-     * @param property       Property to verify.
-     * @param classMetadata  Metamodel of the class we want to check.
-     * @return               <tt>true</tt> if the property is an associantion, <tt>false</tt> otherwise.
-     */
-    protected <E> boolean isAssociationType(String property, ManagedType<E> classMetadata) {
-        return classMetadata.getAttribute(property).isAssociation();
-    }
-
-    /**
-     * Verify if a property is an Embedded type.
-     *
-     * @param property       Property to verify.
-     * @param classMetadata  Metamodel of the class we want to check.
-     * @return               <tt>true</tt> if the property is an embedded attribute, <tt>false</tt> otherwise.
-     */
-    protected <E> boolean isEmbeddedType(String property, ManagedType<E> classMetadata) {
-        return classMetadata.getAttribute(property).getPersistentAttributeType() == Attribute.PersistentAttributeType.EMBEDDED;
-    }
-
-
 }

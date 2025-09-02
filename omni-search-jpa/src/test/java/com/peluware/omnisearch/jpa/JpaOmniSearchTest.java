@@ -77,18 +77,15 @@ class JpaOmniSearchTest {
     // Test data setup methods
     private void setupTestData() {
         // Test data
-        var alice = createUser("Alice", "alice@example.com", true, User.Level.HIGH,
-                Set.of(User.Role.USER, User.Role.ADMIN));
+        var alice = createUser("Alice", "alice@example.com", true, User.Level.HIGH, Set.of(User.Role.USER, User.Role.ADMIN));
         alice.setContacts(Set.of(
                 createContact("Contact1", "Last1"),
                 createContact("Contact2", "Last2")
         ));
 
-        var bob = createUser("Bob", "bob@example.com", false, User.Level.MEDIUM,
-                Set.of(User.Role.GUEST));
+        var bob = createUser("Bob", "bob@example.com", false, User.Level.MEDIUM, Set.of(User.Role.GUEST));
 
-        var dave = createUser("Dave", "charlie@example.net", true, User.Level.LOW,
-                Set.of(User.Role.USER));
+        var dave = createUser("Dave", "charlie@example.net", true, User.Level.LOW, Set.of(User.Role.USER));
 
         em.persist(alice);
         em.persist(bob);
@@ -238,6 +235,24 @@ class JpaOmniSearchTest {
             assertEquals("Alice", result.getFirst().getName());
             assertTrue(result.getFirst().getEmail().contains("example.com"));
         }
+
+        @Test
+        @DisplayName("Should filter by roles using RSQL IN operator")
+        void testSearchFilterRoleIn() {
+            // Given
+            var conditions = new RSQLParser().parse("roles=in=ADMIN");
+            var options = new OmniSearchOptions().query(conditions);
+
+            // When
+            List<User> result = omniSearch.search(User.class, options);
+
+            // Then
+            assertEquals(1, result.size());
+            assertEquals("Alice", result.getFirst().getName());
+            assertTrue(result.getFirst().getRoles().contains(User.Role.USER));
+            assertTrue(result.getFirst().getRoles().contains(User.Role.ADMIN));
+        }
+
     }
 
     @Nested

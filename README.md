@@ -60,7 +60,7 @@ Make sure your `pom.xml` contains the following dependencies:
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-core</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ The `omni-search-jpa` module provides a ready-to-use implementation using JPA Cr
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-jpa</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
@@ -86,7 +86,7 @@ The `omni-search-mongodb` module provides a ready-to-use implementation using Mo
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-mongodb</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
