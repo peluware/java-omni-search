@@ -6,7 +6,7 @@
 
     <groupId>com.peluware</groupId>
     <artifactId>omni-search</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>pom</packaging>
 
     <name>Omni Search</name>
@@ -41,7 +41,7 @@
     <modules>
         <module>omni-search-core</module>
         <module>omni-search-jpa</module>
-        <module>omni-search-mongo</module>
+        <module>omni-search-mongodb</module>
     </modules>
 
     <properties>

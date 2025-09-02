@@ -7,10 +7,10 @@
     <parent>
         <groupId>com.peluware</groupId>
         <artifactId>omni-search</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
 
-    <artifactId>omni-search-mongo</artifactId>
+    <artifactId>omni-search-mongodb</artifactId>
     <name>Omni Search for MongoDB</name>
 
     <properties>

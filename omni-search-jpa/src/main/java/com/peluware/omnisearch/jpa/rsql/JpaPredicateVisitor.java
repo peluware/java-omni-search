@@ -81,9 +81,10 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
         var argumentParser = builderOptions.getArgumentParser();
 
         var path = findPath(node.getSelector(), root, entityManager);
+        var type = path.getModel().getBindableJavaType();
 
-        log.trace("Cast all arguments to type {}.", path.getJavaType().getName());
-        var castedArguments = argumentParser.parse(node.getArguments(), path.getJavaType());
+        log.trace("Cast all arguments to type {}.", type.getName());
+        var castedArguments = argumentParser.parse(node.getArguments(), type);
 
         var comparisionPredicateBuilder = builderOptions.getComparisionPredicateBuilder();
 

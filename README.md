@@ -32,10 +32,6 @@ You can implement this interface using your own data source. For example, with J
 
 ---
 
-## 📦 JPA Implementation
-
-The `omni-search-jpa` module provides a ready-to-use implementation using JPA Criteria API and RSQL.
-
 ### Usage Example
 
 ```java
@@ -64,29 +60,33 @@ Make sure your `pom.xml` contains the following dependencies:
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-core</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
 ### JPA Module
+
+The `omni-search-jpa` module provides a ready-to-use implementation using JPA Criteria API and RSQL.
 
 ```xml
 
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-jpa</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
 ### MongoDB Module
+
+The `omni-search-mongodb` module provides a ready-to-use implementation using MongoDB with POJO entities.
 
 ```xml
 
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-mongodb</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
