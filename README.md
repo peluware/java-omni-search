@@ -21,7 +21,15 @@ This library consists of a **core module** defining the search contract and shar
 ### Core Interface
 
 ```java
+package com.peluware.omnisearch;
+
+import com.peluware.omnisearch.OmniSearchBaseOptions;
+import com.peluware.omnisearch.OmniSearchOptions;
+
+import java.util.List;
+
 public interface OmniSearch {
+
     <E> List<E> search(Class<E> entityClass, OmniSearchOptions options);
 
     <E> long count(Class<E> entityClass, OmniSearchBaseOptions options);
@@ -30,9 +38,50 @@ public interface OmniSearch {
 
 You can implement this interface using your own data source. For example, with JPA, MongoDB, or custom storage engines.
 
+For reactive use cases, there is also a reactive variant returning Uni<T> from Mutiny:
+
+```java
+package com.peluware.omnisearch.reactive.multiny;
+
+import com.peluware.omnisearch.OmniSearchBaseOptions;
+import com.peluware.omnisearch.OmniSearchOptions;
+import io.smallrye.mutiny.Uni;
+
+import java.util.List;
+
+public interface MutinyOmniSearch {
+
+    <E> Uni<List<E>> search(Class<E> entityClass, OmniSearchOptions options);
+
+    <E> Uni<Long> count(Class<E> entityClass, OmniSearchBaseOptions options);
+}
+```
+
+Or native reactive with `Flow.Publisher<T>`:
+
+```java
+package com.peluware.omnisearch.reactive;
+
+import com.peluware.omnisearch.OmniSearchBaseOptions;
+import com.peluware.omnisearch.OmniSearchOptions;
+
+import java.util.List;
+import java.util.concurrent.Flow;
+
+public interface ReactiveOmniSearch {
+
+    <E> Flow.Publisher<List<E>> search(Class<E> entityClass, OmniSearchOptions options);
+
+    <E> Flow.Publisher<Long> count(Class<E> entityClass, OmniSearchBaseOptions options);
+}
+
+```
+
 ---
 
 ### Usage Example
+
+#### Imperative Example with JPA
 
 ```java
 import com.peluware.omnisearch.jpa.*;
@@ -40,11 +89,30 @@ import com.peluware.omnisearch.jpa.*;
 EntityManager entityManager = ...;
 OmniSearch search = new JpaOmniSearch(entityManager);
 
+Node query = new cz.jirutka.rsql.parser.RSQLParser().parse("age>25;name==*john*");
+
 List<User> users = search.search(User.class, opts -> {
-    opts.setSearch("john");
-    opts.setSort(Sort.by("lastName", true));
-    opts.setPagination(new Pagination(0, 20));
+    opts.setSort(Sort.by("lastName", Order.Direction.ASC));
+    opts.setPagination(Pagination.of(0, 20));
+    opts.setQuery(query);
 });
+```
+
+#### Reactive Example with Reactive Hibernate
+
+```java
+import com.peluware.omnisearch.hibernate.reactive.*;
+import io.smallrye.mutiny.Uni;
+
+Mutiny.SessionFactory sessionFactory = ...;
+MutinyOmniSearch search = new HibernateOmniSearch(sessionFactory);
+
+Uni<List<User>> users = search.search(User.class, opts -> {
+    opts.setSearch("john"); // Intelligent search across multiple fields
+    opts.setSort(Sort.by("lastName", Order.Direction.ASC));
+    opts.setPagination(Pagination.of(0, 20));
+});
+
 ```
 
 ---
@@ -60,7 +128,7 @@ Make sure your `pom.xml` contains the following dependencies:
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-core</artifactId>
-    <version>1.0.6</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -73,7 +141,7 @@ The `omni-search-jpa` module provides a ready-to-use implementation using JPA Cr
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-jpa</artifactId>
-    <version>1.0.6</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -86,7 +154,20 @@ The `omni-search-mongodb` module provides a ready-to-use implementation using Mo
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-mongodb</artifactId>
-    <version>1.0.6</version>
+    <version>2.0.0</version>
+</dependency>
+```
+
+## Reactive Hibernate Module
+
+The `omni-search-hibernate-reactive` module provides a ready-to-use implementation using Reactive Hibernate dependency.
+
+```xml
+
+<dependency>
+    <groupId>com.peluware</groupId>
+    <module>omni-search-hibernate-reactive</module>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -99,7 +180,7 @@ You can implement your own version of `OmniSearch` by providing logic for `searc
 Example:
 
 ```java
-import com.peluware.omnisearch.core.*;
+
 
 public class MyCustomSearch implements OmniSearch {
     public <E> List<E> search(Class<E> clazz, OmniSearchOptions options) {

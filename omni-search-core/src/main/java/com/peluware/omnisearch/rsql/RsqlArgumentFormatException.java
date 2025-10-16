@@ -1,7 +1,8 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Antonio Rabelo.
+ * Copyright 2013 Jakub Jirutka <jakub@jirutka.cz>.
+ * Coryright 2015 Antonio Rabelo.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +22,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.core.rsql;
+package com.peluware.omnisearch.rsql;
 
+import lombok.Getter;
 
-public interface RsqlBuilderOptions {
+import java.io.Serial;
 
-    RsqlBuilderOptions DEFAULT = new DefaultRsqlBuilderOptions();
+/**
+ * Indicate that argument is not in suitable format required by entity's
+ * property, i.e. is not parseable to the specified type.
+ *
+ * @author Jakub Jirutka <jakub@jirutka.cz>
+ * @author AntonioRabelo
+ */
+@Getter
+public class RsqlArgumentFormatException extends RuntimeException {
+
+    /**
+	 * SERIAL UID
+	 */
+	@Serial
+    private static final long serialVersionUID = 521849874508654920L;
+	
+	private final String argument;
+    private final Class<?> propertyType;
 
 
     /**
-     * Get a argument parser for casting types.
+     * Construct an <tt>ArgumentFormatException</tt> with specified argument
+     * and property type.
      *
-     * @return ArgumentParser
+     * @param argument
+     * @param propertyType
      */
-    RsqlArgumentParser getArgumentParser();
-
+    public RsqlArgumentFormatException(String argument, Class<?> propertyType) {
+        super("Cannot cast '" + argument + "' to type " + propertyType);
+        this.argument = argument;
+        this.propertyType = propertyType;
+    }
 }

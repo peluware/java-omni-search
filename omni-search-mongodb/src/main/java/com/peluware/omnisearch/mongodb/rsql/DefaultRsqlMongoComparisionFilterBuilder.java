@@ -1,6 +1,6 @@
 package com.peluware.omnisearch.mongodb.rsql;
 
-import com.peluware.omnisearch.core.rsql.RsqlUnknowComparisionOperatorException;
+import com.peluware.omnisearch.rsql.RsqlUnknowComparisionOperatorException;
 import cz.jirutka.rsql.parser.ast.ComparisonOperator;
 import cz.jirutka.rsql.parser.ast.RSQLOperators;
 import lombok.extern.slf4j.Slf4j;

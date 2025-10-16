@@ -1,6 +1,6 @@
 package com.peluware.omnisearch.jpa.entities;
 
-import com.peluware.omnisearch.core.EnumSearchCandidate;
+import com.peluware.omnisearch.EnumSearchCandidate;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

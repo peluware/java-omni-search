@@ -1,8 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2013 Jakub Jirutka <jakub@jirutka.cz>.
- * Coryright 2015 Antonio Rabelo.
+ * Copyright 2015 Antonio Rabelo.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,41 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.core.rsql;
+package com.peluware.omnisearch.rsql;
 
-import cz.jirutka.rsql.parser.ast.ComparisonOperator;
-import lombok.Getter;
 
-import java.io.Serial;
+public interface RsqlBuilderOptions {
 
-/**
- * Indicate that argument is not in suitable format required by entity's
- * property, i.e. is not parseable to the specified type.
- *
- * @author Jakub Jirutka <jakub@jirutka.cz>
- * @author AntonioRabelo
- */
-@Getter
-public class RsqlUnknowComparisionOperatorException extends RuntimeException {
-
-    /**
-     * SERIAL UID
-     */
-    @Serial
-    private static final long serialVersionUID = 521849874508654920L;
-
-    private final transient ComparisonOperator comparisonOperator;
+    RsqlBuilderOptions DEFAULT = new DefaultRsqlBuilderOptions();
 
 
     /**
-     * Construct an <tt>ArgumentFormatException</tt> with specified argument
-     * and property type.
+     * Get a argument parser for casting types.
      *
-     * @param comparisonOperator
-     * @param propertyType
+     * @return ArgumentParser
      */
-    public RsqlUnknowComparisionOperatorException(ComparisonOperator comparisonOperator) {
-        super("Unknown comparison operator: " + comparisonOperator.getSymbol());
-        this.comparisonOperator = comparisonOperator;
-    }
+    RsqlArgumentParser getArgumentParser();
+
 }

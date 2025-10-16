@@ -1,8 +1,9 @@
 package com.peluware.omnisearch.mongodb;
 
-import com.peluware.omnisearch.core.OmniSearch;
-import com.peluware.omnisearch.core.OmniSearchBaseOptions;
-import com.peluware.omnisearch.core.OmniSearchOptions;
+import com.peluware.domain.Order;
+import com.peluware.omnisearch.OmniSearch;
+import com.peluware.omnisearch.OmniSearchBaseOptions;
+import com.peluware.omnisearch.OmniSearchOptions;
 import com.mongodb.client.MongoDatabase;
 import com.peluware.omnisearch.mongodb.resolvers.CollectionNameResolver;
 import com.peluware.omnisearch.mongodb.rsql.MongoFilterVisitor;
@@ -43,7 +44,7 @@ public class MongoOmniSearch implements OmniSearch {
 
 
     @Override
-    public <E> List<E> search(Class<E> entityClass, OmniSearchOptions options) {
+    public <E> List<E> list(Class<E> entityClass, OmniSearchOptions options) {
 
         var collectionName = CollectionNameResolver.resolveCollectionName(entityClass);
         var collection = database.getCollection(collectionName, entityClass);
@@ -60,7 +61,7 @@ public class MongoOmniSearch implements OmniSearch {
         if (sort.isSorted()) {
             var sortDocument = new Document();
             for (var order : sort.orders()) {
-                sortDocument.append(order.property(), order.ascending() ? 1 : -1);
+                sortDocument.append(order.property(), order.direction() == Order.Direction.ASC ? 1 : -1);
             }
             findIterable = findIterable.sort(sortDocument);
         }
@@ -69,8 +70,8 @@ public class MongoOmniSearch implements OmniSearch {
         var pagination = options.getPagination();
         if (pagination.isPaginated()) {
             findIterable = findIterable
-                    .skip(pagination.offset())
-                    .limit(pagination.size());
+                    .skip(pagination.getNumber() * pagination.getSize())
+                    .limit(pagination.getSize());
         }
 
         return Collections.unmodifiableList(findIterable.into(new ArrayList<>()));

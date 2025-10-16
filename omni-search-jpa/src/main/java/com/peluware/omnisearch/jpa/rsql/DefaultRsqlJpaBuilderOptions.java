@@ -1,6 +1,6 @@
 package com.peluware.omnisearch.jpa.rsql;
 
-import com.peluware.omnisearch.core.rsql.*;
+import com.peluware.omnisearch.rsql.DefaultRsqlBuilderOptions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

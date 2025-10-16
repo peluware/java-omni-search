@@ -1,4 +1,4 @@
-package com.peluware.omnisearch.core.rsql;
+package com.peluware.omnisearch.rsql;
 
 import lombok.Data;
 

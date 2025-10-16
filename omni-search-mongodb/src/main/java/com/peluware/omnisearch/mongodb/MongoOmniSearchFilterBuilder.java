@@ -1,6 +1,6 @@
 package com.peluware.omnisearch.mongodb;
 
-import com.peluware.omnisearch.core.OmniSearchBaseOptions;
+import com.peluware.omnisearch.OmniSearchBaseOptions;
 import org.bson.conversions.Bson;
 
 public interface MongoOmniSearchFilterBuilder {

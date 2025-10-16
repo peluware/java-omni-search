@@ -1,4 +1,6 @@
-package com.peluware.omnisearch.core;
+package com.peluware.omnisearch;
+
+import com.peluware.domain.Page;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -16,7 +18,7 @@ public interface OmniSearch {
      * @param <E>         the entity type
      * @return a list of matched entities
      */
-    <E> List<E> search(Class<E> entityClass, OmniSearchOptions options);
+    <E> List<E> list(Class<E> entityClass, OmniSearchOptions options);
 
     /**
      * Executes a search operation for the specified entity class using a consumer to configure the options.
@@ -26,10 +28,10 @@ public interface OmniSearch {
      * @param <E>             the entity type
      * @return a list of matched entities
      */
-    default <E> List<E> search(Class<E> entityClass, Consumer<OmniSearchOptions> optionsConsumer) {
+    default <E> List<E> list(Class<E> entityClass, Consumer<OmniSearchOptions> optionsConsumer) {
         var options = new OmniSearchOptions();
         optionsConsumer.accept(options);
-        return search(entityClass, options);
+        return list(entityClass, options);
     }
 
     /**
@@ -54,5 +56,25 @@ public interface OmniSearch {
         var options = new OmniSearchBaseOptions();
         optionsConsumer.accept(options);
         return count(entityClass, options);
+    }
+
+
+    /**
+     * Executes a paginated search operation for the specified entity class using the provided options.
+     * This method combines the results of {@link #list(Class, OmniSearchOptions)} and {@link #count(Class, OmniSearchBaseOptions)}
+     * to return a {@link Page} object.
+     *
+     * @param entityClass the class of the entity to search
+     * @param options     the search options including filters, sorting, and pagination
+     * @param <E>         the entity type
+     * @return a paginated result of matched entities
+     */
+    default <E> Page<E> page(Class<E> entityClass, OmniSearchOptions options) {
+        return Page.deferred(
+                list(entityClass, options),
+                options.getPagination(),
+                options.getSort(),
+                () -> count(entityClass, options)
+        );
     }
 }

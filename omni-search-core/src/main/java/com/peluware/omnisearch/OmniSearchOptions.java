@@ -1,5 +1,6 @@
-package com.peluware.omnisearch.core;
+package com.peluware.omnisearch;
 
+import com.peluware.domain.DefaultPagination;
 import com.peluware.domain.Order;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
@@ -101,6 +102,6 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * @return the updated options
      */
     public OmniSearchOptions pagination(int pageNumber, int pageSize) {
-        return pagination(new Pagination(pageNumber, pageSize));
+        return pagination(new DefaultPagination(pageNumber, pageSize));
     }
 }

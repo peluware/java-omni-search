@@ -1,4 +1,4 @@
-package com.peluware.omnisearch.core;
+package com.peluware.omnisearch;
 
 import cz.jirutka.rsql.parser.ast.Node;
 import lombok.Getter;

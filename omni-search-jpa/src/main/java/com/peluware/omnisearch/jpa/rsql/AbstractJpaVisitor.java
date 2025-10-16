@@ -23,13 +23,12 @@
  */
 package com.peluware.omnisearch.jpa.rsql;
 
+import com.peluware.omnisearch.jpa.JpaContext;
 import cz.jirutka.rsql.parser.ast.RSQLVisitor;
-import jakarta.persistence.EntityManager;
 import lombok.Setter;
 
 /**
  * AbstractQueryVisitor
- *
  * Abstract Visitor class for parsing RSQL AST Nodes.
  *
  * @author AntonioRabelo
@@ -38,7 +37,7 @@ import lombok.Setter;
  * @param <E> Entity type
  */
 @Setter
-public abstract class AbstractJpaVisitor<T, E> implements RSQLVisitor<T, EntityManager> {
+public abstract class AbstractJpaVisitor<T, E> implements RSQLVisitor<T, JpaContext> {
 
     /**
      * -- SETTER --

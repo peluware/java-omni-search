@@ -24,7 +24,7 @@
 package com.peluware.omnisearch.mongodb.rsql;
 
 
-import com.peluware.omnisearch.core.rsql.RsqlBuilderOptions;
+import com.peluware.omnisearch.rsql.RsqlBuilderOptions;
 
 public interface RsqlMongoBuilderOptions extends RsqlBuilderOptions {
 

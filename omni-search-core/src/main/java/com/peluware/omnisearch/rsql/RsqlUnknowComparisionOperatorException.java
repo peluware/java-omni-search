@@ -22,8 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.peluware.omnisearch.core.rsql;
+package com.peluware.omnisearch.rsql;
 
+import cz.jirutka.rsql.parser.ast.ComparisonOperator;
 import lombok.Getter;
 
 import java.io.Serial;
@@ -36,28 +37,26 @@ import java.io.Serial;
  * @author AntonioRabelo
  */
 @Getter
-public class RsqlArgumentFormatException extends RuntimeException {
+public class RsqlUnknowComparisionOperatorException extends RuntimeException {
 
     /**
-	 * SERIAL UID
-	 */
-	@Serial
+     * SERIAL UID
+     */
+    @Serial
     private static final long serialVersionUID = 521849874508654920L;
-	
-	private final String argument;
-    private final Class<?> propertyType;
+
+    private final transient ComparisonOperator comparisonOperator;
 
 
     /**
      * Construct an <tt>ArgumentFormatException</tt> with specified argument
      * and property type.
      *
-     * @param argument
+     * @param comparisonOperator
      * @param propertyType
      */
-    public RsqlArgumentFormatException(String argument, Class<?> propertyType) {
-        super("Cannot cast '" + argument + "' to type " + propertyType);
-        this.argument = argument;
-        this.propertyType = propertyType;
+    public RsqlUnknowComparisionOperatorException(ComparisonOperator comparisonOperator) {
+        super("Unknown comparison operator: " + comparisonOperator.getSymbol());
+        this.comparisonOperator = comparisonOperator;
     }
 }

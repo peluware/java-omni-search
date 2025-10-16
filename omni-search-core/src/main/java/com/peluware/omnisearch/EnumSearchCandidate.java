@@ -1,4 +1,4 @@
-package com.peluware.omnisearch.core;
+package com.peluware.omnisearch;
 
 import java.util.Collection;
 import java.util.HashSet;

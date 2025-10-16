@@ -1,4 +1,4 @@
-package com.peluware.omnisearch.core.rsql;
+package com.peluware.omnisearch.rsql;
 
 
 import lombok.Getter;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * Custom ArgumentParser implementation for JPA with comprehensive type support.
+ * Custom ArgumentParser implementation for RSQL that provides robust and flexible parsing capabilities.
  * Supports all common Java types including Java 8+ time API, collections, and custom types.
  *
  * @author luidmidev

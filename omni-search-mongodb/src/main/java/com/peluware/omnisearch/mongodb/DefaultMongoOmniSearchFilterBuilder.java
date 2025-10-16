@@ -1,8 +1,8 @@
 package com.peluware.omnisearch.mongodb;
 
-import com.peluware.omnisearch.core.EnumSearchCandidate;
-import com.peluware.omnisearch.core.OmniSearchBaseOptions;
-import com.peluware.omnisearch.core.ParseNumber;
+import com.peluware.omnisearch.EnumSearchCandidate;
+import com.peluware.omnisearch.OmniSearchBaseOptions;
+import com.peluware.omnisearch.utils.ParseNumber;
 import com.peluware.omnisearch.mongodb.resolvers.PropertyNameResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;

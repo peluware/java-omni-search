@@ -1,9 +1,9 @@
 package com.peluware.omnisearch.jpa;
 
 
-import com.peluware.omnisearch.core.EnumSearchCandidate;
-import com.peluware.omnisearch.core.OmniSearchBaseOptions;
-import com.peluware.omnisearch.core.ParseNumber;
+import com.peluware.omnisearch.EnumSearchCandidate;
+import com.peluware.omnisearch.OmniSearchBaseOptions;
+import com.peluware.omnisearch.utils.ParseNumber;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Attribute;
@@ -46,7 +46,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
     protected <E> Predicate searchInAllColumns(
             @NotNull String search,
             Root<E> root,
-            EntityManager em,
+            JpaContext em,
             Set<String> joinColumns
     ) {
         var predicates = new ArrayList<>(getSearchPredicates(search, root, em));
@@ -75,7 +75,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
      * @return a collection of predicates matching the search keyword
      */
     @SuppressWarnings("java:S3776")
-    protected Collection<Predicate> getSearchPredicates(String search, Path<?> path, EntityManager em) {
+    protected Collection<Predicate> getSearchPredicates(String search, Path<?> path, JpaContext em) {
         var javaType = path.getJavaType();
         var managedType = em.getMetamodel().managedType(javaType);
         var predicates = new ArrayList<Predicate>();
@@ -113,7 +113,6 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
         return predicates;
     }
 
-
     /**
      * Builds predicates for simple types like String, UUID, Number, Boolean, Year, and Enums.
      *
@@ -123,7 +122,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
      * @return a collection of predicates
      */
     @SuppressWarnings("java:S3776")
-    protected @Nullable Predicate getBasicPredicates(String search, Path<?> path, EntityManager em) {
+    protected @Nullable Predicate getBasicPredicates(String search, Path<?> path, JpaContext em) {
         var type = path.getJavaType();
         var cb = em.getCriteriaBuilder();
 
@@ -169,7 +168,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
     /**
      * {@inheritDoc}
      */
-    public <M> Predicate buildPredicate(EntityManager em, Root<M> root, OmniSearchBaseOptions options) {
+    public <M> Predicate buildPredicate(JpaContext em, Root<M> root, OmniSearchBaseOptions options) {
         var cb = em.getCriteriaBuilder();
         var predicate = cb.conjunction();
 

@@ -23,9 +23,9 @@
  */
 package com.peluware.omnisearch.jpa.rsql;
 
-import com.peluware.omnisearch.core.rsql.RsqlUnknowComparisionOperatorException;
+import com.peluware.omnisearch.jpa.JpaContext;
+import com.peluware.omnisearch.rsql.RsqlUnknowComparisionOperatorException;
 import cz.jirutka.rsql.parser.ast.ComparisonOperator;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 
@@ -33,5 +33,5 @@ import java.util.List;
 
 public interface RsqlJpaComparisionPredicateBuilder {
 
-    Predicate buildComparisionPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, EntityManager manager) throws RsqlUnknowComparisionOperatorException;
+    Predicate buildComparisionPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, JpaContext manager) throws RsqlUnknowComparisionOperatorException;
 }

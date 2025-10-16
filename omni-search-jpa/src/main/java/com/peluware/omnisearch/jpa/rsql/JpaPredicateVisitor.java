@@ -23,8 +23,8 @@
  */
 package com.peluware.omnisearch.jpa.rsql;
 
+import com.peluware.omnisearch.jpa.JpaContext;
 import cz.jirutka.rsql.parser.ast.*;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 @Slf4j
-public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> implements RSQLVisitor<Predicate, EntityManager> {
+public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> {
 
     private final Root<T> root;
 
@@ -46,42 +46,25 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
     }
 
     @Override
-    public Predicate visit(AndNode node, EntityManager entityManager) {
+    public Predicate visit(AndNode node, JpaContext jpaContext) {
         log.debug("Creating Predicate for AndNode: {}", node);
-        return visitLogicalNode(node, entityManager);
+        return visitLogicalNode(node, jpaContext);
     }
 
     @Override
-    public Predicate visit(OrNode node, EntityManager entityManager) {
+    public Predicate visit(OrNode node, JpaContext jpaContext) {
         log.debug("Creating Predicate for OrNode: {}", node);
-        return visitLogicalNode(node, entityManager);
+        return visitLogicalNode(node, jpaContext);
     }
 
-    private Predicate visitLogicalNode(LogicalNode node, EntityManager entityManager) {
-        var cb = entityManager.getCriteriaBuilder();
-        var children = node.getChildren();
-        if (children.isEmpty()) {
-            return cb.disjunction();
-        }
-
-        var predicates = new ArrayList<Predicate>();
-        for (var childNode : children) {
-            predicates.add(childNode.accept(this, entityManager));
-        }
-
-        return switch (node.getOperator()) {
-            case OR -> cb.or(predicates.toArray(new Predicate[0]));
-            case AND -> cb.and(predicates.toArray(new Predicate[0]));
-        };
-    }
 
     @Override
-    public Predicate visit(ComparisonNode node, EntityManager entityManager) {
+    public Predicate visit(ComparisonNode node, JpaContext jpaContext) {
         log.debug("Creating Predicate for ComparisonNode: {}", node);
 
         var argumentParser = builderOptions.getArgumentParser();
 
-        var path = findPath(node.getSelector(), root, entityManager);
+        var path = findPath(node.getSelector(), root, jpaContext);
         var type = path.getModel().getBindableJavaType();
 
         log.trace("Cast all arguments to type {}.", type.getName());
@@ -93,8 +76,26 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
                 path,
                 node.getOperator(),
                 castedArguments,
-                entityManager
+                jpaContext
         );
+    }
+
+    private Predicate visitLogicalNode(LogicalNode node, JpaContext jpaContext) {
+        var cb = jpaContext.getCriteriaBuilder();
+        var children = node.getChildren();
+        if (children.isEmpty()) {
+            return cb.disjunction();
+        }
+
+        var predicates = new ArrayList<Predicate>();
+        for (var childNode : children) {
+            predicates.add(childNode.accept(this, jpaContext));
+        }
+
+        return switch (node.getOperator()) {
+            case OR -> cb.or(predicates.toArray(new Predicate[0]));
+            case AND -> cb.and(predicates.toArray(new Predicate[0]));
+        };
     }
 
 
@@ -107,7 +108,7 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> imp
      * @return The Path for the property path
      * @throws IllegalArgumentException if attribute of the given property name does not exist
      */
-    public Path<?> findPath(String path, Path<?> startRoot, EntityManager entityManager) {
+    public Path<?> findPath(String path, Path<?> startRoot, JpaContext entityManager) {
         var graph = path.split("\\.");
 
         var metaModel = entityManager.getMetamodel();

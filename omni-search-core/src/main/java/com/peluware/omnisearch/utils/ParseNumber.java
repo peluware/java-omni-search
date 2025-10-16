@@ -1,4 +1,4 @@
-package com.peluware.omnisearch.core;
+package com.peluware.omnisearch.utils;
 
 import lombok.experimental.UtilityClass;
 

@@ -1,15 +1,15 @@
 package com.peluware.omnisearch.jpa;
 
-import com.peluware.omnisearch.core.OmniSearchOptions;
+import com.peluware.omnisearch.OmniSearchOptions;
 import com.peluware.omnisearch.jpa.entities.*;
 import cz.jirutka.rsql.parser.RSQLParser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JpaOmniSearchTest {
 
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
+    static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:15")
             .withDatabaseName("omnisearch_test")
             .withUsername("test")
             .withPassword("test");
@@ -131,7 +131,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().search("Alice");
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(1, result.size());
@@ -145,7 +145,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().search("example.com");
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(2, result.size());
@@ -161,7 +161,7 @@ class JpaOmniSearchTest {
                     .propagations("contacts");
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(1, result.size());
@@ -180,7 +180,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().search("true");
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(2, result.size());
@@ -194,7 +194,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().search("HIGH");
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(1, result.size());
@@ -208,7 +208,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().search("USER");
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(2, result.size());
@@ -228,7 +228,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().query(conditions);
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(1, result.size());
@@ -244,7 +244,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().query(conditions);
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(1, result.size());
@@ -270,7 +270,7 @@ class JpaOmniSearchTest {
             var options = new OmniSearchOptions().query(query);
 
             // When
-            List<User> result = omniSearch.search(User.class, options);
+            List<User> result = omniSearch.list(User.class, options);
 
             // Then
             assertEquals(2, result.size());

@@ -1,6 +1,6 @@
 package com.peluware.omnisearch.mongodb.rsql;
 
-import com.peluware.omnisearch.core.rsql.DefaultRsqlBuilderOptions;
+import com.peluware.omnisearch.rsql.DefaultRsqlBuilderOptions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

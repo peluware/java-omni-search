@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.peluware</groupId>
         <artifactId>omni-search</artifactId>
-        <version>1.0.6</version>
+        <version>2.0.0</version>
     </parent>
 
     <artifactId>omni-search-core</artifactId>
@@ -22,12 +22,10 @@
         <dependency>
             <groupId>com.peluware</groupId>
             <artifactId>domain-commons</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>cz.jirutka.rsql</groupId>
             <artifactId>rsql-parser</artifactId>
-            <version>2.1.0</version>
         </dependency>
     </dependencies>
 

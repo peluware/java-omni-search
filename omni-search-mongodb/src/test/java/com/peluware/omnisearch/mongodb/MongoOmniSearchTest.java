@@ -6,9 +6,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.peluware.domain.Order;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
-import com.peluware.omnisearch.core.OmniSearchOptions;
+import com.peluware.omnisearch.OmniSearchOptions;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import lombok.Data;
@@ -20,9 +21,9 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.mongodb.MongoDBContainer;
 
 import java.time.Year;
 import java.util.*;
@@ -171,7 +172,7 @@ class MongoOmniSearchTest {
         var options = new OmniSearchOptions()
                 .search(searchTerm);
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(1, results.size(), "Should find exactly one result for: " + testDescription);
         assertEquals(expectedProductName, results.getFirst().getName(), "Should find correct product for: " + testDescription);
@@ -202,7 +203,7 @@ class MongoOmniSearchTest {
         var options = new OmniSearchOptions()
                 .search("5");
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         // Should find products that have rating 5 or stock 5
         assertTrue(results.size() >= 2);
@@ -216,7 +217,7 @@ class MongoOmniSearchTest {
         var options = new OmniSearchOptions()
                 .search("nonexistent");
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertTrue(results.isEmpty());
     }
@@ -225,9 +226,9 @@ class MongoOmniSearchTest {
     @DisplayName("Should apply sorting")
     void testSorting() {
         var options = new OmniSearchOptions()
-                .sort(Sort.by("price", true));
+                .sort(Sort.by("price", Order.Direction.ASC));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(5, results.size());
         // Should be sorted by price ascending
@@ -239,9 +240,9 @@ class MongoOmniSearchTest {
     @DisplayName("Should apply sorting descending")
     void testSortingDescending() {
         var options = new OmniSearchOptions()
-                .sort(Sort.by("price", false));
+                .sort(Sort.by("price", Order.Direction.DESC));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(5, results.size());
         // Should be sorted by price descending
@@ -253,10 +254,10 @@ class MongoOmniSearchTest {
     @DisplayName("Should apply pagination")
     void testPagination() {
         var options = new OmniSearchOptions()
-                .sort(Sort.by("name", true))
-                .pagination(new Pagination(0, 2));
+                .sort(Sort.by("name", Order.Direction.ASC))
+                .pagination(Pagination.of(0, 2));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(2, results.size());
     }
@@ -265,10 +266,10 @@ class MongoOmniSearchTest {
     @DisplayName("Should apply pagination with offset")
     void testPaginationWithOffset() {
         var options = new OmniSearchOptions()
-                .sort(Sort.by("name", true))
-                .pagination(new Pagination(2, 2));
+                .sort(Sort.by("name", Order.Direction.ASC))
+                .pagination(Pagination.of(2, 2));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(1, results.size());
     }
@@ -278,10 +279,10 @@ class MongoOmniSearchTest {
     void testSearchWithSortingAndPagination() {
         var options = new OmniSearchOptions()
                 .search("Electronics") // This won't match any direct field
-                .sort(Sort.by("price", true))
-                .pagination(new Pagination(0, 10));
+                .sort(Sort.by("price", Order.Direction.DESC))
+                .pagination(Pagination.of(0, 10));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         // Should return empty since "Electronics" doesn't match basic fields
         assertTrue(results.isEmpty());
@@ -294,7 +295,7 @@ class MongoOmniSearchTest {
                 .search("Electronics")
                 .propagations(Set.of("category"));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         // Should find all electronics products (4 products)
         assertEquals(4, results.size());
@@ -332,7 +333,7 @@ class MongoOmniSearchTest {
         var options = new OmniSearchOptions()
                 .search("");
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(5, results.size()); // Should return all products
     }
@@ -343,7 +344,7 @@ class MongoOmniSearchTest {
         var options = new OmniSearchOptions()
                 .search(null);
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(5, results.size()); // Should return all products
     }
@@ -354,7 +355,7 @@ class MongoOmniSearchTest {
         var options = new OmniSearchOptions()
                 .query(new RSQLParser().parse("price>100"));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(3, results.size()); // Should return 3 products with price > 100
         var names = results.stream().map(Product::getName).toList();
@@ -369,7 +370,7 @@ class MongoOmniSearchTest {
         var options = new OmniSearchOptions()
                 .query(new RSQLParser().parse("price==89.99"));
 
-        var results = omniSearch.search(Product.class, options);
+        var results = omniSearch.list(Product.class, options);
 
         assertEquals(1, results.size()); // Should return 1 product with price == 89.99
         assertEquals("Mechanical Keyboard", results.getFirst().getName());
