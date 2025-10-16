@@ -55,6 +55,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <com.peluware.domaincommons.version>1.0.2</com.peluware.domaincommons.version>
+        <org.hibernate.reactive.version>3.1.5.Final</org.hibernate.reactive.version>
+        <io.smallrye.reactive.mutiny.version>2.9.4</io.smallrye.reactive.mutiny.version>
+        <cz.jirutka.rsql.parser.version>2.1.0</cz.jirutka.rsql.parser.version>
     </properties>
 
     <dependencies>
@@ -133,17 +136,17 @@
             <dependency>
                 <groupId>org.hibernate.reactive</groupId>
                 <artifactId>hibernate-reactive-core</artifactId>
-                <version>3.1.5.Final</version>
+                <version>${org.hibernate.reactive.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.smallrye.reactive</groupId>
                 <artifactId>mutiny</artifactId>
-                <version>2.9.4</version>
+                <version>${io.smallrye.reactive.mutiny.version}</version>
             </dependency>
             <dependency>
                 <groupId>cz.jirutka.rsql</groupId>
                 <artifactId>rsql-parser</artifactId>
-                <version>2.1.0</version>
+                <version>${cz.jirutka.rsql.parser.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
