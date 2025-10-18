@@ -30,7 +30,7 @@ import java.util.List;
 
 public interface OmniSearch {
 
-    <E> List<E> search(Class<E> entityClass, OmniSearchOptions options);
+    <E> List<E> list(Class<E> entityClass, OmniSearchOptions options);
 
     <E> long count(Class<E> entityClass, OmniSearchBaseOptions options);
 }
@@ -51,7 +51,7 @@ import java.util.List;
 
 public interface MutinyOmniSearch {
 
-    <E> Uni<List<E>> search(Class<E> entityClass, OmniSearchOptions options);
+    <E> Uni<List<E>> list(Class<E> entityClass, OmniSearchOptions options);
 
     <E> Uni<Long> count(Class<E> entityClass, OmniSearchBaseOptions options);
 }
@@ -70,7 +70,7 @@ import java.util.concurrent.Flow;
 
 public interface ReactiveOmniSearch {
 
-    <E> Flow.Publisher<List<E>> search(Class<E> entityClass, OmniSearchOptions options);
+    <E> Flow.Publisher<List<E>> list(Class<E> entityClass, OmniSearchOptions options);
 
     <E> Flow.Publisher<Long> count(Class<E> entityClass, OmniSearchBaseOptions options);
 }
@@ -91,7 +91,7 @@ OmniSearch search = new JpaOmniSearch(entityManager);
 
 Node query = new cz.jirutka.rsql.parser.RSQLParser().parse("age>25;name==*john*");
 
-List<User> users = search.search(User.class, opts -> {
+List<User> users = search.list(User.class, opts -> {
     opts.setSort(Sort.by("lastName", Order.Direction.ASC));
     opts.setPagination(Pagination.of(0, 20));
     opts.setQuery(query);
@@ -102,12 +102,13 @@ List<User> users = search.search(User.class, opts -> {
 
 ```java
 import com.peluware.omnisearch.hibernate.reactive.*;
+import org.hibernate.reactive.mutiny.Mutiny;
 import io.smallrye.mutiny.Uni;
 
 Mutiny.SessionFactory sessionFactory = ...;
 MutinyOmniSearch search = new HibernateOmniSearch(sessionFactory);
 
-Uni<List<User>> users = search.search(User.class, opts -> {
+Uni<List<User>> users = search.list(User.class, opts -> {
     opts.setSearch("john"); // Intelligent search across multiple fields
     opts.setSort(Sort.by("lastName", Order.Direction.ASC));
     opts.setPagination(Pagination.of(0, 20));
@@ -180,10 +181,10 @@ You can implement your own version of `OmniSearch` by providing logic for `searc
 Example:
 
 ```java
-
+import com.peluware.omnisearch.OmniSearch;
 
 public class MyCustomSearch implements OmniSearch {
-    public <E> List<E> search(Class<E> clazz, OmniSearchOptions options) {
+    public <E> List<E> list(Class<E> clazz, OmniSearchOptions options) {
         // implement search logic
     }
 
