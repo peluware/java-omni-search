@@ -44,6 +44,10 @@ public class HibernateOmniSearch implements MutinyOmniSearch {
             var predicate = predicateBuilder.buildPredicate(jpaContext, root, options, rsqlBuilderTools);
 
             cq.where(predicate);
+            if (JpaUtils.needDistinct(options, root, jpaContext)) {
+                cq.distinct(true);
+            }
+
             var sort = options.getSort();
             if (sort.isSorted()) {
                 cq.orderBy(JpaUtils.getOrders(sort, root, cb));
@@ -73,6 +77,10 @@ public class HibernateOmniSearch implements MutinyOmniSearch {
             var predicate = predicateBuilder.buildPredicate(jpaContext, root, options, rsqlBuilderTools);
 
             cq.select(cb.count(root));
+            if (JpaUtils.needDistinct(options, root, jpaContext)) {
+                cq.distinct(true);
+            }
+
             cq.where(predicate);
 
             return session.createQuery(cq).getSingleResult();

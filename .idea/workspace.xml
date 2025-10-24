@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c3251c40-baa4-4449-8b33-efda0625f291" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +57,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
@@ -100,6 +104,9 @@
       <workItem from="1760637625833" duration="4714000" />
       <workItem from="1760651539304" duration="2600000" />
       <workItem from="1760726831763" duration="47000" />
+      <workItem from="1760804516540" duration="173000" />
+      <workItem from="1761258406125" duration="214000" />
+      <workItem from="1761262681611" duration="3754000" />
     </task>
     <servers />
   </component>

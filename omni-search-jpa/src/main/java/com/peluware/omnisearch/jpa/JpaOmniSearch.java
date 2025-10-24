@@ -65,6 +65,9 @@ public class JpaOmniSearch implements OmniSearch {
         var predicate = predicateBuilder.buildPredicate(jpaContext, root, options, rsqlBuilderTools);
 
         cq.where(predicate);
+        if (JpaUtils.needDistinct(options, root, jpaContext)) {
+            cq.distinct(true);
+        }
 
         var sort = options.getSort();
         if (sort.isSorted()) {
@@ -96,15 +99,19 @@ public class JpaOmniSearch implements OmniSearch {
     public <E> long count(Class<E> entityClass, OmniSearchBaseOptions options) {
 
         var cb = em.getCriteriaBuilder();
-        var query = cb.createQuery(Long.class);
-        var root = query.from(entityClass);
+        var cq = cb.createQuery(Long.class);
+        var root = cq.from(entityClass);
 
         var predicate = predicateBuilder.buildPredicate(jpaContext, root, options, rsqlBuilderTools);
 
-        query.where(predicate);
-        query.select(cb.count(root));
+        cq.where(predicate);
+        if (JpaUtils.needDistinct(options, root, jpaContext)) {
+            cq.distinct(true);
+        }
 
-        return em.createQuery(query).getSingleResult();
+        cq.select(cb.count(root));
+
+        return em.createQuery(cq).getSingleResult();
     }
 
 }
