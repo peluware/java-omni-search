@@ -47,14 +47,14 @@ public interface OmniSearch {
     /**
      * Counts the total number of matched entities for the specified entity class using a consumer to configure the options.
      *
-     * @param entityClass     the class of the entity to count
-     * @param optionsConsumer a consumer to configure the search options
-     * @param <E>             the entity type
+     * @param entityClass the class of the entity to count
+     * @param consumer    a consumer to configure the search options
+     * @param <E>         the entity type
      * @return the total number of matched entities
      */
-    default <E> long count(Class<E> entityClass, Consumer<OmniSearchBaseOptions> optionsConsumer) {
+    default <E> long count(Class<E> entityClass, Consumer<OmniSearchBaseOptions> consumer) {
         var options = new OmniSearchBaseOptions();
-        optionsConsumer.accept(options);
+        consumer.accept(options);
         return count(entityClass, options);
     }
 

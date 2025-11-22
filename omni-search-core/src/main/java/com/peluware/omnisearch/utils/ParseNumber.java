@@ -1,13 +1,15 @@
 package com.peluware.omnisearch.utils;
 
-import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
 
-@UtilityClass
-public class ParseNumber {
+public final class ParseNumber {
+
+    private ParseNumber() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     /**
      * List of converters to transform strings into numeric types.

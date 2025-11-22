@@ -28,8 +28,6 @@ import com.peluware.omnisearch.rsql.RsqlBuilderOptions;
 
 public interface RsqlJpaBuilderOptions extends RsqlBuilderOptions {
 
-    RsqlJpaBuilderOptions DEFAULT = new DefaultRsqlJpaBuilderOptions();
-
     /**
      * Get a predicate strategy for parsing Node into Predicate.
      *

@@ -26,9 +26,6 @@ package com.peluware.omnisearch.rsql;
 
 public interface RsqlBuilderOptions {
 
-    RsqlBuilderOptions DEFAULT = new DefaultRsqlBuilderOptions();
-
-
     /**
      * Get a argument parser for casting types.
      *

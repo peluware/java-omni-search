@@ -24,19 +24,15 @@
  */
 package com.peluware.omnisearch.rsql;
 
-import cz.jirutka.rsql.parser.ast.ComparisonOperator;
-import lombok.Getter;
-
 import java.io.Serial;
 
 /**
  * Indicate that argument is not in suitable format required by entity's
  * property, i.e. is not parseable to the specified type.
  *
- * @author Jakub Jirutka <jakub@jirutka.cz>
+ * @author Jakub Jirutka jakub@jirutka.cz
  * @author AntonioRabelo
  */
-@Getter
 public class RsqlUnknowComparisionOperatorException extends RuntimeException {
 
     /**
@@ -45,18 +41,20 @@ public class RsqlUnknowComparisionOperatorException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 521849874508654920L;
 
-    private final transient ComparisonOperator comparisonOperator;
+    private final transient String comparisonOperator;
 
 
     /**
-     * Construct an <tt>ArgumentFormatException</tt> with specified argument
-     * and property type.
+     * Construct an <tt>RsqlUnknowComparisionOperatorException</tt> with specified comparison operator
      *
-     * @param comparisonOperator
-     * @param propertyType
+     * @param comparisonOperator The unknown comparison operator
      */
-    public RsqlUnknowComparisionOperatorException(ComparisonOperator comparisonOperator) {
-        super("Unknown comparison operator: " + comparisonOperator.getSymbol());
+    public RsqlUnknowComparisionOperatorException(String comparisonOperator) {
+        super("Unknown comparison operator: " + comparisonOperator);
         this.comparisonOperator = comparisonOperator;
+    }
+
+    public String getComparisonOperator() {
+        return comparisonOperator;
     }
 }

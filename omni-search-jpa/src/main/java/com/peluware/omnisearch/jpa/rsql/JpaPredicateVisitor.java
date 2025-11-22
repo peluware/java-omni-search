@@ -30,13 +30,15 @@ import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
 import jakarta.persistence.metamodel.ManagedType;
 import jakarta.persistence.metamodel.PluralAttribute;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Set;
 
-@Slf4j
 public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> {
+
+    private static final Logger log = LoggerFactory.getLogger(JpaPredicateVisitor.class);
 
     private final Root<T> root;
 
@@ -100,10 +102,10 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> {
 
 
     /**
-     * Find a property path in the graph From<?,?> startRoot
+     * Find a property path in the graph From startRoot
      *
      * @param path   The property path to find.
-     * @param startRoot      From<?,?> that property path depends on.
+     * @param startRoot      From that property path depends on.
      * @param entityManager  JPA EntityManager.
      * @return The Path for the property path
      * @throws IllegalArgumentException if attribute of the given property name does not exist

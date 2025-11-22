@@ -4,14 +4,16 @@ import com.peluware.domain.Page;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
 import io.smallrye.mutiny.Uni;
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-@UtilityClass
 public final class MutinyPageUtils {
+
+    private MutinyPageUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static <T> Uni<Page<T>> deferred(
             @NotNull Uni<List<T>> contentUni,

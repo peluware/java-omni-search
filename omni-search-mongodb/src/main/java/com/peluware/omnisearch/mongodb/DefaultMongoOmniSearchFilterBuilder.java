@@ -2,13 +2,18 @@ package com.peluware.omnisearch.mongodb;
 
 import com.peluware.omnisearch.EnumSearchCandidate;
 import com.peluware.omnisearch.OmniSearchBaseOptions;
+import com.peluware.omnisearch.mongodb.rsql.DefaultRsqlMongoBuilderOptions;
+import com.peluware.omnisearch.mongodb.rsql.MongoFilterVisitor;
+import com.peluware.omnisearch.mongodb.rsql.RsqlMongoBuilderOptions;
 import com.peluware.omnisearch.utils.ParseNumber;
 import com.peluware.omnisearch.mongodb.resolvers.PropertyNameResolver;
-import lombok.extern.slf4j.Slf4j;
+import cz.jirutka.rsql.parser.RSQLParser;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.time.Year;
@@ -18,11 +23,14 @@ import java.util.regex.Pattern;
 
 import static com.mongodb.client.model.Filters.*;
 
+
 /**
- * Default implementation of the {@link MongoOmniSearchFilterBuilder} interface.
- * Caches ClassModel instances for entity classes to optimize filter resolution.
+ * Default implementation of {@link MongoOmniSearchFilterBuilder}.
+ * <p>
+ * Builds MongoDB {@link Bson} filters based on {@link OmniSearchBaseOptions},
+ * combining text-based search across basic and complex fields, propagated
+ * properties, and optional RSQL filtering.
  */
-@Slf4j
 public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilterBuilder {
 
     /**
@@ -38,6 +46,8 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
     private static final Map<Class<?>, List<Field>> BASIC_FIELDS = new ConcurrentHashMap<>();
     private static final Map<Class<?>, List<Field>> COMPLEX_FIELDS = new ConcurrentHashMap<>();
 
+    private static final Logger log = LoggerFactory.getLogger(DefaultMongoOmniSearchFilterBuilder.class);
+
     protected static List<Field> getBasicFields(Class<?> clazz) {
         return BASIC_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
                 .filter(field -> ReflectionUtils.isBasicField(field, clazz) || ReflectionUtils.isBasicCompositeField(field, clazz))
@@ -50,6 +60,21 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
                 .toList());
     }
 
+    private final RSQLParser rsqlParser;
+    private final RsqlMongoBuilderOptions rsqlBuilderOptions;
+
+    public DefaultMongoOmniSearchFilterBuilder(RSQLParser rsqlParser, RsqlMongoBuilderOptions rsqlBuilderOptions) {
+        this.rsqlParser = rsqlParser;
+        this.rsqlBuilderOptions = rsqlBuilderOptions;
+    }
+
+    public DefaultMongoOmniSearchFilterBuilder(RSQLParser rsqlParser) {
+        this(rsqlParser, new DefaultRsqlMongoBuilderOptions());
+    }
+
+    public DefaultMongoOmniSearchFilterBuilder() {
+        this(new RSQLParser());
+    }
 
     @Override
     public <D> Bson buildFilter(Class<D> documentClass, OmniSearchBaseOptions options) {
@@ -59,6 +84,14 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
         var search = options.getSearch();
         if (search != null && !search.isBlank()) {
             filters = searchInAllProperties(search, documentClass, options.getPropagations());
+        }
+
+        var query = options.getQuery();
+        if (query != null) {
+            var node = rsqlParser.parse(query);
+            var visitor = new MongoFilterVisitor<>(documentClass, rsqlBuilderOptions);
+            var rsqlFilter = node.accept(visitor);
+            filters = and(filters, rsqlFilter);
         }
 
         return filters;

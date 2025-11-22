@@ -3,27 +3,36 @@ package com.peluware.omnisearch.mongodb.rsql;
 import com.peluware.omnisearch.mongodb.resolvers.PropertyNameResolver;
 import com.peluware.omnisearch.mongodb.ReflectionUtils;
 import cz.jirutka.rsql.parser.ast.*;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.mongodb.client.model.Filters.*;
 
-@Slf4j
-@RequiredArgsConstructor
 public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
+
+    private static final Logger log = LoggerFactory.getLogger(MongoFilterVisitor.class);
+    private static final Map<String, FieldPath> FIELD_PATH_CACHE = new ConcurrentHashMap<>();
 
     private final Class<T> documentClass;
     private final RsqlMongoBuilderOptions builderOptions;
 
     // Cache simple para evitar reflexión repetida
-    private final Map<String, FieldPath> fieldPathCache = new HashMap<>();
+
+    public MongoFilterVisitor(Class<T> documentClass, RsqlMongoBuilderOptions builderOptions) {
+        this.documentClass = documentClass;
+        this.builderOptions = builderOptions;
+    }
+
+    public MongoFilterVisitor(Class<T> documentClass) {
+        this(documentClass, new DefaultRsqlMongoBuilderOptions());
+    }
 
     @Override
     public Bson visit(AndNode node, Void param) {
@@ -75,7 +84,7 @@ public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
     protected FieldPath findFieldType(String originalPath, Class<?> clazz) {
         // Usar cache
         var cacheKey = clazz.getName() + "#" + originalPath;
-        var cached = fieldPathCache.get(cacheKey);
+        var cached = FIELD_PATH_CACHE.get(cacheKey);
         if (cached != null) {
             return cached;
         }
@@ -108,7 +117,7 @@ public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
         var result = new FieldPath(resolvedPath, currentClass);
 
         // Cache del resultado
-        fieldPathCache.put(cacheKey, result);
+        FIELD_PATH_CACHE.put(cacheKey, result);
 
         log.debug("Resolved full path '{}' to '{}' with final type '{}'", originalPath, resolvedPath, currentClass.getName());
 
@@ -119,8 +128,8 @@ public class MongoFilterVisitor<T> implements RSQLVisitor<Bson, Void> {
     /**
      * Limpia el cache. Útil para tests.
      */
-    public void clearCache() {
-        fieldPathCache.clear();
+    public static void clearCache() {
+        FIELD_PATH_CACHE.clear();
         log.debug("Field path cache cleared");
     }
 

@@ -1,8 +1,5 @@
 package com.peluware.omnisearch.mongodb;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.util.List;
 import java.util.Map;
 
@@ -11,28 +8,24 @@ import static com.peluware.omnisearch.mongodb.ReflectionUtils.resolveComponentFi
 
 public class ScratchForTypes {
 
-    @Data
     abstract static class Base<T> {
-        private T value;
-        private List<T> list;
+        public T value;
+        public List<T> list;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data
+
     static class Derived extends Base<String> {
-        private Map<String, Integer> map;
+        public Map<String, Integer> map;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data
+
     static class AnotherBase<T> extends Base<T> {
-        private T anotherValue;
+        public T anotherValue;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Data
+
     static class AnotherDerived extends AnotherBase<Integer> {
-        private List<Integer> anotherList;
+        public List<Integer> anotherList;
     }
 
     // Mini test en main

@@ -3,16 +3,17 @@ package com.peluware.omnisearch.reactive;
 import com.peluware.domain.Page;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
-import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.concurrent.Flow;
 import java.util.function.Supplier;
 
 
-@UtilityClass
 public class FlowPageUtils {
 
+    private FlowPageUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static <T> Flow.Publisher<Page<T>> deferred(
             Flow.Publisher<List<T>> contentPublisher,

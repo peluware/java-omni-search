@@ -25,7 +25,6 @@ package com.peluware.omnisearch.jpa.rsql;
 
 import com.peluware.omnisearch.jpa.JpaContext;
 import cz.jirutka.rsql.parser.ast.RSQLVisitor;
-import lombok.Setter;
 
 /**
  * AbstractQueryVisitor
@@ -36,22 +35,18 @@ import lombok.Setter;
  * @param <T> Result type
  * @param <E> Entity type
  */
-@Setter
 public abstract class AbstractJpaVisitor<T, E> implements RSQLVisitor<T, JpaContext> {
 
     /**
-     * -- SETTER --
-     *  Set the entity class explicitly, needed when the entity type is itself a generic
+     *  The entity class explicitly, needed when the entity type is itself a generic
      *
      */
-    protected Class<? extends E> entityClass;
+    protected final Class<? extends E> entityClass;
 
     /**
-     * -- SETTER --
-     *  Set a predicate strategy.
-     *
+     *  Builder options
      */
-    protected RsqlJpaBuilderOptions builderOptions;
+    protected final RsqlJpaBuilderOptions builderOptions;
 
 
     protected AbstractJpaVisitor(Class<? extends E> entityClass, RsqlJpaBuilderOptions builderOptions) {

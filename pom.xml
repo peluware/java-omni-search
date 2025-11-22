@@ -6,7 +6,7 @@
 
     <groupId>com.peluware</groupId>
     <artifactId>omni-search</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
     <packaging>pom</packaging>
 
     <name>Omni Search</name>
@@ -51,21 +51,15 @@
     </modules>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <com.peluware.domaincommons.version>1.0.2</com.peluware.domaincommons.version>
+        <com.peluware.domaincommons.version>1.0.3</com.peluware.domaincommons.version>
         <org.hibernate.reactive.version>3.1.5.Final</org.hibernate.reactive.version>
         <io.smallrye.reactive.mutiny.version>2.9.4</io.smallrye.reactive.mutiny.version>
         <cz.jirutka.rsql.parser.version>2.1.0</cz.jirutka.rsql.parser.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.42</version>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -86,7 +80,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>6.1.0-M1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -168,13 +162,6 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.42</version>
-                        </path>
-                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

@@ -5,10 +5,63 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3251c40-baa4-4449-8b33-efda0625f291" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/EnumSearchCandidate.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/EnumSearchCandidate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchBaseOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchBaseOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/DefaultRsqlArgumentParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/DefaultRsqlArgumentParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/DefaultRsqlBuilderOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/DefaultRsqlBuilderOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlArgumentFormatException.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlArgumentFormatException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlArgumentParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlArgumentParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlBuilderOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlBuilderOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlUnknowComparisionOperatorException.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/rsql/RsqlUnknowComparisionOperatorException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/utils/ParseNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/utils/ParseNumber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateReactiveJpaContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateReactiveJpaContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaContext.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearchPredicateBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearchPredicateBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/AbstractJpaVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/AbstractJpaVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/DefaultRsqlJpaBuilderOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/DefaultRsqlJpaBuilderOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/DefaultRsqlJpaComparisionPredicateBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/DefaultRsqlJpaComparisionPredicateBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/JpaPredicateVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/JpaPredicateVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/RsqlJpaBuilderOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/RsqlJpaBuilderOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/RsqlJpaComparisionPredicateBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/RsqlJpaComparisionPredicateBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/JpaOmniSearchTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/JpaOmniSearchTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/Contacts.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/Contacts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/Countinent.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/Countinent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/Country.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/Country.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/House.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/House.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/entities/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/DefaultMongoOmniSearchFilterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/DefaultMongoOmniSearchFilterBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/MongoOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/MongoOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/MongoOmniSearchFilterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/MongoOmniSearchFilterBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/ReflectionUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/ReflectionUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/CollectionNameResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/CollectionNameResolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/PropertyNameResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/PropertyNameResolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/DefaultRsqlMongoBuilderOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/DefaultRsqlMongoBuilderOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/DefaultRsqlMongoComparisionFilterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/DefaultRsqlMongoComparisionFilterBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/MongoFilterVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/MongoFilterVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/RsqlMongoBuilderOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/RsqlMongoBuilderOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/RsqlMongoComparisionFilterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/rsql/RsqlMongoComparisionFilterBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/test/java/com/peluware/omnisearch/mongodb/MongoOmniSearchTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/test/java/com/peluware/omnisearch/mongodb/MongoOmniSearchTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/test/java/com/peluware/omnisearch/mongodb/ScratchForTypes.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/test/java/com/peluware/omnisearch/mongodb/ScratchForTypes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowPageUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowPageUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyPageUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyPageUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,10 +91,16 @@
     &quot;accountId&quot;: &quot;af56c38b-e0b5-44ef-9007-1fa16dcfde2d&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.jdks/temurin-21.0.9/lib/src.zip!/java.base/java/util/List.java" root0="SKIP_INSPECTION" />
+  </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -57,6 +116,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
@@ -85,8 +145,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
       </set>
     </attachedChunks>
   </component>
@@ -107,6 +167,9 @@
       <workItem from="1760804516540" duration="173000" />
       <workItem from="1761258406125" duration="214000" />
       <workItem from="1761262681611" duration="3754000" />
+      <workItem from="1761323228653" duration="760000" />
+      <workItem from="1763410753484" duration="441000" />
+      <workItem from="1763785561997" duration="20974000" />
     </task>
     <servers />
   </component>
@@ -123,5 +186,13 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

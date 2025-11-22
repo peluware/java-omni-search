@@ -5,15 +5,15 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
 import org.hibernate.reactive.mutiny.Mutiny;
 
-public record HibernateReactiveJpaContext(Mutiny.SessionFactory sf) implements JpaContext {
+public record HibernateReactiveJpaContext(Mutiny.SessionFactory sessionFactory) implements JpaContext {
 
     @Override
     public Metamodel getMetamodel() {
-        return sf.getMetamodel();
+        return sessionFactory.getMetamodel();
     }
 
     @Override
     public CriteriaBuilder getCriteriaBuilder() {
-        return sf.getCriteriaBuilder();
+        return sessionFactory.getCriteriaBuilder();
     }
 }

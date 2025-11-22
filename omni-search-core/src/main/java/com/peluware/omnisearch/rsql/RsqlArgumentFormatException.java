@@ -24,27 +24,24 @@
  */
 package com.peluware.omnisearch.rsql;
 
-import lombok.Getter;
-
 import java.io.Serial;
 
 /**
  * Indicate that argument is not in suitable format required by entity's
  * property, i.e. is not parseable to the specified type.
  *
- * @author Jakub Jirutka <jakub@jirutka.cz>
+ * @author Jakub Jirutka jakub@jirutka.cz
  * @author AntonioRabelo
  */
-@Getter
 public class RsqlArgumentFormatException extends RuntimeException {
 
     /**
-	 * SERIAL UID
-	 */
-	@Serial
+     * SERIAL UID
+     */
+    @Serial
     private static final long serialVersionUID = 521849874508654920L;
-	
-	private final String argument;
+
+    private final String argument;
     private final Class<?> propertyType;
 
 
@@ -59,5 +56,13 @@ public class RsqlArgumentFormatException extends RuntimeException {
         super("Cannot cast '" + argument + "' to type " + propertyType);
         this.argument = argument;
         this.propertyType = propertyType;
+    }
+
+    public String getArgument() {
+        return argument;
+    }
+
+    public Class<?> getPropertyType() {
+        return propertyType;
     }
 }

@@ -4,8 +4,6 @@ import com.peluware.domain.DefaultPagination;
 import com.peluware.domain.Order;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
-import cz.jirutka.rsql.parser.ast.Node;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -14,7 +12,6 @@ import java.util.Set;
 /**
  * Represents the extended options for search operations, including sorting and pagination.
  */
-@Getter
 public class OmniSearchOptions extends OmniSearchBaseOptions {
 
     private Sort sort = Sort.unsorted();
@@ -48,7 +45,7 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * {@inheritDoc}
      */
     @Override
-    public OmniSearchOptions query(Node query) {
+    public OmniSearchOptions query(String query) {
         return (OmniSearchOptions) super.query(query);
     }
 
@@ -103,5 +100,23 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      */
     public OmniSearchOptions pagination(int pageNumber, int pageSize) {
         return pagination(new DefaultPagination(pageNumber, pageSize));
+    }
+
+    /**
+     * Gets the sort configuration.
+     *
+     * @return the sorting criteria
+     */
+    public Sort getSort() {
+        return sort;
+    }
+
+    /**
+     * Gets the pagination options.
+     *
+     * @return the pagination configuration
+     */
+    public Pagination getPagination() {
+        return pagination;
     }
 }

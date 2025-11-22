@@ -28,8 +28,6 @@ import com.peluware.omnisearch.rsql.RsqlBuilderOptions;
 
 public interface RsqlMongoBuilderOptions extends RsqlBuilderOptions {
 
-    RsqlMongoBuilderOptions DEFAULT = new DefaultRsqlMongoBuilderOptions();
-
     /**
      * Get a filter builder for comparison operations.
      *

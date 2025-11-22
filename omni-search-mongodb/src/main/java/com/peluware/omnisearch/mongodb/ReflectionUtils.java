@@ -1,10 +1,10 @@
 package com.peluware.omnisearch.mongodb;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -13,13 +13,16 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
-@Slf4j
-@UtilityClass
-public class ReflectionUtils {
+public final class ReflectionUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(ReflectionUtils.class);
+
+    private ReflectionUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static Class<?> resolveComponentFieldType(Field field, Class<?> contextClass) {
         var type = resolveFieldType(field, contextClass);
-
         if (type.isArray()) {
             return type.getComponentType();
         }
@@ -70,7 +73,7 @@ public class ReflectionUtils {
     /**
      * Resuelve el tipo de un campo considerando genéricos usando Apache Commons TypeUtils.
      */
-    public Class<?> resolveFieldType(Field field, Class<?> contextClass) {
+    public static Class<?> resolveFieldType(Field field, Class<?> contextClass) {
         try {
             var genericType = field.getGenericType();
 

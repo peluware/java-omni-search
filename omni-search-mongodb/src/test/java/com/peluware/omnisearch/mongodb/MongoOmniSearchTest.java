@@ -11,10 +11,6 @@ import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
 import com.peluware.omnisearch.OmniSearchOptions;
 
-import cz.jirutka.rsql.parser.RSQLParser;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.*;
@@ -44,9 +40,6 @@ class MongoOmniSearchTest {
     private MongoOmniSearch omniSearch;
 
     // Test entities
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Product {
 
         private ObjectId id;
@@ -57,9 +50,9 @@ class MongoOmniSearchTest {
         private Boolean active;
         private Year releaseYear;
         private Category category;
-        private List<String> tags = new ArrayList<>();
-        private List<Integer> ratings = new ArrayList<>();
-        private List<Review> reviews = new ArrayList<>();
+        private List<String> tags;
+        private List<Integer> ratings;
+        private List<Review> reviews;
 
         public Product(String name, String description, Double price, Integer stock, Boolean active) {
             this.name = name;
@@ -71,23 +64,171 @@ class MongoOmniSearchTest {
             this.ratings = new ArrayList<>();
             this.reviews = new ArrayList<>();
         }
+
+        public Product() {
+            // Default constructor for MongoDB POJO codec
+        }
+
+        public ObjectId getId() {
+            return id;
+        }
+
+        public void setId(ObjectId id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public Double getPrice() {
+            return price;
+        }
+
+        public void setPrice(Double price) {
+            this.price = price;
+        }
+
+        public Integer getStock() {
+            return stock;
+        }
+
+        public void setStock(Integer stock) {
+            this.stock = stock;
+        }
+
+        public Boolean getActive() {
+            return active;
+        }
+
+        public void setActive(Boolean active) {
+            this.active = active;
+        }
+
+        public Year getReleaseYear() {
+            return releaseYear;
+        }
+
+        public void setReleaseYear(Year releaseYear) {
+            this.releaseYear = releaseYear;
+        }
+
+        public Category getCategory() {
+            return category;
+        }
+
+        public void setCategory(Category category) {
+            this.category = category;
+        }
+
+        public List<String> getTags() {
+            return tags;
+        }
+
+        public void setTags(List<String> tags) {
+            this.tags = tags;
+        }
+
+        public List<Integer> getRatings() {
+            return ratings;
+        }
+
+        public void setRatings(List<Integer> ratings) {
+            this.ratings = ratings;
+        }
+
+        public List<Review> getReviews() {
+            return reviews;
+        }
+
+        public void setReviews(List<Review> reviews) {
+            this.reviews = reviews;
+        }
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
+
     public static class Category {
         private String name;
         private String code;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public Category(String name, String code) {
+            this.name = name;
+            this.code = code;
+        }
+
+        public Category() {
+            // Default constructor for MongoDB POJO codec
+        }
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
+
     public static class Review {
         private String author;
         private String comment;
         private Integer rating;
+
+
+        public String getAuthor() {
+            return author;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+
+        public Integer getRating() {
+            return rating;
+        }
+
+        public void setRating(Integer rating) {
+            this.rating = rating;
+        }
+
+        public Review(String author, String comment, Integer rating) {
+            this.author = author;
+            this.comment = comment;
+            this.rating = rating;
+        }
+
+        public Review() {
+            // Default constructor for MongoDB POJO codec
+        }
     }
 
     @BeforeEach
@@ -353,7 +494,7 @@ class MongoOmniSearchTest {
     @DisplayName("Should search using RSQL query (price > 100)")
     void testWithRsqlPriceGt100() {
         var options = new OmniSearchOptions()
-                .query(new RSQLParser().parse("price>100"));
+                .query("price>100");
 
         var results = omniSearch.list(Product.class, options);
 
@@ -368,7 +509,7 @@ class MongoOmniSearchTest {
     @DisplayName("Should search using RSQL query (price == 89.99)")
     void testWithRsqlPriceEq89_99() {
         var options = new OmniSearchOptions()
-                .query(new RSQLParser().parse("price==89.99"));
+                .query("price==89.99");
 
         var results = omniSearch.list(Product.class, options);
 

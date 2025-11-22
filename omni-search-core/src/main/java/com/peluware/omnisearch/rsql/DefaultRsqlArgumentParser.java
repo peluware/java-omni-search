@@ -1,9 +1,9 @@
 package com.peluware.omnisearch.rsql;
 
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import com.peluware.omnisearch.utils.ParseNumber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,14 +22,9 @@ import java.util.function.Function;
  *
  * @author luidmidev
  */
-@Slf4j
 public class DefaultRsqlArgumentParser implements RsqlArgumentParser {
 
-
-    @Getter
-    @Setter
-    private static DefaultRsqlArgumentParser instance = new DefaultRsqlArgumentParser();
-
+    private static final Logger log = LoggerFactory.getLogger(DefaultRsqlArgumentParser.class);
 
     // Date formatters for flexible parsing
     private static final List<DateTimeFormatter> DATE_FORMATTERS = Arrays.asList(
@@ -189,19 +184,36 @@ public class DefaultRsqlArgumentParser implements RsqlArgumentParser {
      */
     @SuppressWarnings("unchecked")
     private <T> T parseArray(String argument, Class<T> type) {
-        Class<?> componentType = type.getComponentType();
-        String[] parts = argument.split(",");
+        var componentType = type.getComponentType();
+        var parts = argument.split(",");
 
         if (componentType.equals(String.class)) {
             return (T) parts;
-        } else if (componentType.equals(Integer.class) || componentType.equals(int.class)) {
-            Integer[] result = new Integer[parts.length];
+        }
+
+        if (componentType.equals(Boolean.class) || componentType.equals(boolean.class)) {
+            Boolean[] result = new Boolean[parts.length];
             for (int i = 0; i < parts.length; i++) {
-                result[i] = Integer.valueOf(parts[i].trim());
+                result[i] = Boolean.valueOf(parts[i].trim());
             }
             return (T) result;
         }
-        // Add more array types as needed
+
+        return tryParseArray(parts, componentType);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T tryParseArray(String[] parts, Class<?> componentType) {
+        // Manejo de tipos numéricos usando ParseNumber
+        for (var parser : ParseNumber.PARSERS) {
+            if (parser.type().equals(componentType)) {
+                Number[] result = new Number[parts.length];
+                for (int i = 0; i < parts.length; i++) {
+                    result[i] = parser.parse(parts[i].trim());
+                }
+                return (T) result;
+            }
+        }
 
         return null;
     }
@@ -227,7 +239,7 @@ public class DefaultRsqlArgumentParser implements RsqlArgumentParser {
      * Parse LocalDate with multiple format support
      */
     private LocalDate parseLocalDate(String argument) {
-        for (DateTimeFormatter formatter : DATE_FORMATTERS) {
+        for (var formatter : DATE_FORMATTERS) {
             try {
                 return LocalDate.parse(argument, formatter);
             } catch (DateTimeParseException ignored) {
@@ -241,7 +253,7 @@ public class DefaultRsqlArgumentParser implements RsqlArgumentParser {
      * Parse LocalDateTime with multiple format support
      */
     private LocalDateTime parseLocalDateTime(String argument) {
-        for (DateTimeFormatter formatter : DATETIME_FORMATTERS) {
+        for (var formatter : DATETIME_FORMATTERS) {
             try {
                 return LocalDateTime.parse(argument, formatter);
             } catch (DateTimeParseException ignored) {
@@ -264,7 +276,7 @@ public class DefaultRsqlArgumentParser implements RsqlArgumentParser {
      * Parse LocalTime with multiple format support
      */
     private LocalTime parseLocalTime(String argument) {
-        for (DateTimeFormatter formatter : TIME_FORMATTERS) {
+        for (var formatter : TIME_FORMATTERS) {
             try {
                 return LocalTime.parse(argument, formatter);
             } catch (DateTimeParseException ignored) {

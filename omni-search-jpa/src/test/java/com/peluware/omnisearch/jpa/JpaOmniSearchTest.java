@@ -2,7 +2,6 @@ package com.peluware.omnisearch.jpa;
 
 import com.peluware.omnisearch.OmniSearchOptions;
 import com.peluware.omnisearch.jpa.entities.*;
-import cz.jirutka.rsql.parser.RSQLParser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -224,7 +223,7 @@ class JpaOmniSearchTest {
         @DisplayName("Should filter by name and email using RSQL")
         void testSearchFilterNameAndEmail() {
             // Given
-            var conditions = new RSQLParser().parse("name==alice;email==*example.com*");
+            var conditions = "name==alice;email==*example.com*";
             var options = new OmniSearchOptions().query(conditions);
 
             // When
@@ -240,7 +239,7 @@ class JpaOmniSearchTest {
         @DisplayName("Should filter by roles using RSQL IN operator")
         void testSearchFilterRoleIn() {
             // Given
-            var conditions = new RSQLParser().parse("roles=in=ADMIN");
+            var conditions = "roles=in=ADMIN";
             var options = new OmniSearchOptions().query(conditions);
 
             // When
@@ -266,7 +265,7 @@ class JpaOmniSearchTest {
             setupComplexTestData();
             omniSearch = new JpaOmniSearch(em);
 
-            var query = new RSQLParser().parse("houses.country.countinent.code==NA");
+            var query = "houses.country.countinent.code==NA";
             var options = new OmniSearchOptions().query(query);
 
             // When

@@ -24,7 +24,7 @@ public interface MutinyOmniSearch {
      * @param <E>         the entity type
      * @return Uni emitting a list of matched entities
      */
-    <E> Uni<List<E>> search(Class<E> entityClass, OmniSearchOptions options);
+    <E> Uni<List<E>> list(Class<E> entityClass, OmniSearchOptions options);
 
     /**
      * Executes a search operation for the specified entity class using a consumer to configure the options.
@@ -34,10 +34,10 @@ public interface MutinyOmniSearch {
      * @param <E>             the entity type
      * @return Uni emitting a list of matched entities
      */
-    default <E> Uni<List<E>> search(Class<E> entityClass, Consumer<OmniSearchOptions> optionsConsumer) {
+    default <E> Uni<List<E>> list(Class<E> entityClass, Consumer<OmniSearchOptions> optionsConsumer) {
         var options = new OmniSearchOptions();
         optionsConsumer.accept(options);
-        return search(entityClass, options);
+        return list(entityClass, options);
     }
 
     /**
@@ -66,7 +66,7 @@ public interface MutinyOmniSearch {
 
     /**
      * Executes a paginated search operation for the specified entity class using the provided options.
-     * This method combines the results of {@link #search(Class, OmniSearchOptions)} and {@link #count(Class, OmniSearchBaseOptions)}
+     * This method combines the results of {@link #list(Class, OmniSearchOptions)} and {@link #count(Class, OmniSearchBaseOptions)}
      * to return a {@link Page} object containing the results and pagination metadata.
      *
      * @param entityClass the class of the entity to search
@@ -76,7 +76,7 @@ public interface MutinyOmniSearch {
      */
     default <E> Uni<Page<E>> page(Class<E> entityClass, OmniSearchOptions options) {
         return MutinyPageUtils.deferred(
-                search(entityClass, options),
+                list(entityClass, options),
                 options.getPagination(),
                 options.getSort(),
                 () -> count(entityClass, options)
@@ -92,8 +92,8 @@ public interface MutinyOmniSearch {
     static FlowOmniSearch toFlow(MutinyOmniSearch mutinyOmniSearch) {
         return new FlowOmniSearch() {
             @Override
-            public <E> Flow.Publisher<List<E>> search(Class<E> entityClass, OmniSearchOptions options) {
-                return mutinyOmniSearch.search(entityClass, options).convert().toPublisher();
+            public <E> Flow.Publisher<List<E>> list(Class<E> entityClass, OmniSearchOptions options) {
+                return mutinyOmniSearch.list(entityClass, options).convert().toPublisher();
             }
 
             @Override
@@ -112,8 +112,8 @@ public interface MutinyOmniSearch {
     static MutinyOmniSearch fromFlow(FlowOmniSearch flowOmniSearch) {
         return new MutinyOmniSearch() {
             @Override
-            public <E> Uni<List<E>> search(Class<E> entityClass, OmniSearchOptions options) {
-                return Uni.createFrom().publisher(flowOmniSearch.search(entityClass, options));
+            public <E> Uni<List<E>> list(Class<E> entityClass, OmniSearchOptions options) {
+                return Uni.createFrom().publisher(flowOmniSearch.list(entityClass, options));
             }
 
             @Override

@@ -1,7 +1,6 @@
 package com.peluware.omnisearch.mongodb.resolvers;
 
 import com.peluware.omnisearch.mongodb.ReflectionUtils;
-import lombok.experimental.UtilityClass;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.lang.reflect.Field;
@@ -28,9 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Peluware
  * @since 1.0
  */
-@UtilityClass
 @SuppressWarnings("java:S1192")
 public final class PropertyNameResolver {
+
+    private PropertyNameResolver() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     private static final List<PropertyNameProvider> DEFAULT_PROVIDERS = new ArrayList<>(List.of(
             new BsonPropertyProvider(),
@@ -102,7 +104,7 @@ public final class PropertyNameResolver {
      * Provider for MongoDB driver's {@code @BsonProperty} annotation.
      * This is the standard annotation for the official MongoDB Java driver.
      */
-    class BsonPropertyProvider implements PropertyNameProvider {
+    static class BsonPropertyProvider implements PropertyNameProvider {
 
         @Override
         public Optional<String> resolvePropertyName(Field field) {
@@ -121,7 +123,7 @@ public final class PropertyNameResolver {
      * This provider gracefully handles the case where Spring Data MongoDB
      * is not on the classpath by using reflection.
      */
-    class SpringFieldProvider implements PropertyNameProvider {
+    static class SpringFieldProvider implements PropertyNameProvider {
 
         private static final boolean SPRING_AVAILABLE;
         private static final Class<?> FIELD_ANNOTATION_CLASS;
@@ -159,7 +161,7 @@ public final class PropertyNameResolver {
      * Provider for Morphia's {@code @Property} annotation.
      * Morphia is another popular MongoDB ODM for Java.
      */
-    class MorphiaPropertyProvider implements PropertyNameProvider {
+    static class MorphiaPropertyProvider implements PropertyNameProvider {
 
         private static final boolean MORPHIA_AVAILABLE;
         private static final Class<?> PROPERTY_ANNOTATION_CLASS;

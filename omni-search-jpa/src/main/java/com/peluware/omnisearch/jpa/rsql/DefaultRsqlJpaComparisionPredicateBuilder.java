@@ -28,14 +28,15 @@ import com.peluware.omnisearch.jpa.JpaContext;
 import com.peluware.omnisearch.rsql.RsqlUnknowComparisionOperatorException;
 import cz.jirutka.rsql.parser.ast.*;
 import jakarta.persistence.criteria.*;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-@Slf4j
 @SuppressWarnings({"unchecked", "rawtypes", "java:S3740"})
 public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaComparisionPredicateBuilder {
 
+    private static final Logger log = LoggerFactory.getLogger(DefaultRsqlJpaComparisionPredicateBuilder.class);
     public static final Character LIKE_WILDCARD = '*';
 
     protected static final Date START_DATE;
@@ -81,7 +82,7 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
             return createNotIn(propertyPath, arguments, jpaContext);
         }
 
-        throw new RsqlUnknowComparisionOperatorException(operator);
+        throw new RsqlUnknowComparisionOperatorException(operator.getSymbol());
     }
 
     private Predicate lessThanOrEqualPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, JpaContext jpaContext) {
@@ -168,9 +169,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      * Creates the between than.
      *
      * @param propertyPath the property path
-     * @param start the start date
-     * @param end the argument
-     * @param jpaContext the manager
+     * @param start        the start date
+     * @param end          the argument
+     * @param jpaContext   the manager
      * @return the predicate
      */
     protected Predicate createBetweenThan(Expression<? extends Date> propertyPath, Date start, Date end, JpaContext jpaContext) {
@@ -182,9 +183,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      * Apply a case-insensitive "like" constraint to the property path. Value
      * should contain wildcards "*" (% in SQL) and "_".
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument with/without wildcards
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument with/without wildcards
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createLike(Expression<String> propertyPath, String argument, JpaContext jpaContext) {
@@ -196,8 +197,8 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply an "is null" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param JpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param JpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createIsNull(Expression<?> propertyPath, JpaContext JpaContext) {
@@ -208,9 +209,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply an "equal" constraint to property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument
-     * @param JpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument
+     * @param JpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createEqual(Expression<?> propertyPath, Object argument, JpaContext JpaContext) {
@@ -221,9 +222,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "not equal" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createNotEqual(Expression<?> propertyPath, Object argument, JpaContext jpaContext) {
@@ -233,11 +234,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
 
     /**
      * Apply a negative case-insensitive "like" constraint to the property path.
-     * Value should contains wildcards "*" (% in SQL) and "_".
+     * Value should contain wildcards "*" (% in SQL) and "_".
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument with/without wildcards
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument with/without wildcards
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createNotLike(Expression<String> propertyPath, String argument, JpaContext jpaContext) {
@@ -248,8 +249,8 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply an "is not null" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createIsNotNull(Expression<?> propertyPath, JpaContext jpaContext) {
@@ -260,9 +261,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "greater than" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument number.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument number.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createGreaterThan(Expression<? extends Number> propertyPath, Number argument, JpaContext jpaContext) {
@@ -273,9 +274,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "greater than" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected <Y extends Comparable<? super Y>> Predicate createGreaterThanComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
@@ -286,9 +287,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "greater than or equal" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument number.
-     * @param JpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument number.
+     * @param JpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createGreaterEqual(Expression<? extends Number> propertyPath, Number argument, JpaContext JpaContext) {
@@ -299,9 +300,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "greater than or equal" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected <Y extends Comparable<? super Y>> Predicate createGreaterEqualComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
@@ -312,9 +313,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "less than" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument number.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument number.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createLessThan(Expression<? extends Number> propertyPath, Number argument, JpaContext jpaContext) {
@@ -325,9 +326,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "less than" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected <Y extends Comparable<? super Y>> Predicate createLessThanComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
@@ -338,9 +339,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "less than or equal" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument number.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument number.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createLessEqual(Expression<? extends Number> propertyPath, Number argument, JpaContext jpaContext) {
@@ -351,9 +352,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "less than or equal" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param argument      Argument.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param argument     Argument.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected <Y extends Comparable<? super Y>> Predicate createLessEqualComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
@@ -364,8 +365,8 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "in" constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param arguments     List of arguments.
+     * @param propertyPath Property path that we want to compare.
+     * @param arguments    List of arguments.
      * @return Predicate a predicate representation.
      */
     protected Predicate createIn(Expression<?> propertyPath, List<?> arguments) {
@@ -375,9 +376,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     /**
      * Apply a "not in" (out) constraint to the property path.
      *
-     * @param propertyPath  Property path that we want to compare.
-     * @param arguments     List of arguments.
-     * @param jpaContext       JPA EntityManager.
+     * @param propertyPath Property path that we want to compare.
+     * @param arguments    List of arguments.
+     * @param jpaContext   JPA EntityManager.
      * @return Predicate a predicate representation.
      */
     protected Predicate createNotIn(Expression<?> propertyPath, List<?> arguments, JpaContext jpaContext) {
@@ -396,7 +397,7 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param date Date to be modified
      * @param days Days to be added or removed form argument;
-     *@return Date modified date
+     * @return Date modified date
      */
     protected Date modifyDate(Date date, int days) {
         Calendar c = Calendar.getInstance();
@@ -408,8 +409,9 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
 
     /**
      * Builds an error message that reports that the argument is not suitable for use with the comparison operator.
-     * @param operator operator From<?,?> the RSQL query
-     * @param argument actual argument produced From<?,?> the ArgumentParser
+     *
+     * @param operator operator From the RSQL query
+     * @param argument actual argument produced From the ArgumentParser
      * @return Error message for use in an Exception
      */
     protected String buildNotComparableMessage(ComparisonOperator operator, Object argument) {

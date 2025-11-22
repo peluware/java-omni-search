@@ -12,8 +12,6 @@ public interface EnumSearchCandidate {
 
     String name();
 
-    int ordinal();
-
     boolean isCandidate(String value);
 
     /**

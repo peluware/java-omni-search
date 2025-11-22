@@ -1,7 +1,6 @@
 package com.peluware.omnisearch.mongodb.resolvers;
 
 import com.peluware.omnisearch.mongodb.ReflectionUtils;
-import lombok.experimental.UtilityClass;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -27,9 +26,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Peluware
  * @since 1.0
  */
-@UtilityClass
 @SuppressWarnings("java:S1192")
 public final class CollectionNameResolver {
+
+    private CollectionNameResolver() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     private static final List<CollectionNameProvider> DEFAULT_PROVIDERS = new ArrayList<>(List.of(
             new SpringDocumentProvider(),
@@ -38,7 +40,6 @@ public final class CollectionNameResolver {
     ));
 
     private static final Map<Class<?>, String> COLLECTION_NAME_CACHE = new ConcurrentHashMap<>();
-
 
     /**
      * Resolves the MongoDB collection name for the given Java class using the default providers.
@@ -61,6 +62,7 @@ public final class CollectionNameResolver {
 
     /**
      * Adds a custom collection name provider to the resolver.
+     *
      * @param provider the custom provider to add
      */
     public static void addCollectionNameProvider(CollectionNameProvider provider) {
@@ -71,7 +73,8 @@ public final class CollectionNameResolver {
 
     /**
      * Adds a custom collection name provider at a specific index in the resolver.
-     * @param index the index at which to insert the provider
+     *
+     * @param index    the index at which to insert the provider
      * @param provider the custom provider to add
      */
     public static void addCollectionNameProvider(int index, CollectionNameProvider provider) {
@@ -92,7 +95,7 @@ public final class CollectionNameResolver {
          *
          * @param clazz the class to resolve the collection name for
          * @return an Optional containing the resolved name, or empty if this provider
-         *         cannot resolve the name from its annotation source
+         * cannot resolve the name from its annotation source
          */
         Optional<String> resolveCollectionName(Class<?> clazz);
     }
@@ -102,7 +105,7 @@ public final class CollectionNameResolver {
      * This provider gracefully handles the case where Spring Data MongoDB
      * is not on the classpath by using reflection.
      */
-    class SpringDocumentProvider implements CollectionNameProvider {
+    static class SpringDocumentProvider implements CollectionNameProvider {
 
         private static final boolean SPRING_AVAILABLE;
         private static final Class<?> DOCUMENT_ANNOTATION_CLASS;
@@ -141,15 +144,20 @@ public final class CollectionNameResolver {
                 var documentAnnotation = clazz.getAnnotation((Class<? extends Annotation>) DOCUMENT_ANNOTATION_CLASS);
                 if (documentAnnotation != null) {
                     // Try collection() method first (newer versions)
-                    var collection = (String) COLLECTION_METHOD.invoke(documentAnnotation);
-                    if (collection != null && !collection.isBlank()) {
-                        return Optional.of(collection);
+                    if (COLLECTION_METHOD != null) {
+                        var collection = (String) COLLECTION_METHOD.invoke(documentAnnotation);
+                        if (collection != null && !collection.isBlank()) {
+                            return Optional.of(collection);
+                        }
                     }
 
+
                     // Fall back to value() method (older versions)
-                    var value = (String) VALUE_METHOD.invoke(documentAnnotation);
-                    if (value != null && !value.isBlank()) {
-                        return Optional.of(value);
+                    if (VALUE_METHOD != null) {
+                        var value = (String) VALUE_METHOD.invoke(documentAnnotation);
+                        if (value != null && !value.isBlank()) {
+                            return Optional.of(value);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -165,7 +173,7 @@ public final class CollectionNameResolver {
      * This provider gracefully handles the case where Quarkus MongoDB
      * is not on the classpath by using reflection.
      */
-    class QuarkusMongoEntityProvider implements CollectionNameProvider {
+    static class QuarkusMongoEntityProvider implements CollectionNameProvider {
 
         private static final boolean QUARKUS_AVAILABLE;
         private static final Class<?> MONGO_ENTITY_ANNOTATION_CLASS;
@@ -202,7 +210,7 @@ public final class CollectionNameResolver {
      * Provider for Morphia's {@code @Entity} annotation.
      * Morphia is another popular MongoDB ODM for Java.
      */
-    class MorphiaEntityProvider implements CollectionNameProvider {
+    static class MorphiaEntityProvider implements CollectionNameProvider {
 
         private static final boolean MORPHIA_AVAILABLE;
         private static final Class<?> ENTITY_ANNOTATION_CLASS;

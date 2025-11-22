@@ -1,11 +1,8 @@
 package com.peluware.omnisearch.jpa.rsql;
 
 import com.peluware.omnisearch.rsql.DefaultRsqlBuilderOptions;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+
 public class DefaultRsqlJpaBuilderOptions extends DefaultRsqlBuilderOptions implements RsqlJpaBuilderOptions {
 
     private RsqlJpaComparisionPredicateBuilder predicateBuilder;

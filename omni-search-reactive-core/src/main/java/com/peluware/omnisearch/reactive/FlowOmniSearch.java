@@ -21,7 +21,7 @@ public interface FlowOmniSearch {
      * @param <E>         the entity type
      * @return Publisher emitting a single list of matched entities
      */
-    <E> Flow.Publisher<List<E>> search(Class<E> entityClass, OmniSearchOptions options);
+    <E> Flow.Publisher<List<E>> list(Class<E> entityClass, OmniSearchOptions options);
 
     /**
      * Executes a search operation for the specified entity class using a consumer to configure the options.
@@ -31,10 +31,10 @@ public interface FlowOmniSearch {
      * @param <E>             the entity type
      * @return Publisher emitting a single list of matched entities
      */
-    default <E> Flow.Publisher<List<E>> search(Class<E> entityClass, Consumer<OmniSearchOptions> optionsConsumer) {
+    default <E> Flow.Publisher<List<E>> list(Class<E> entityClass, Consumer<OmniSearchOptions> optionsConsumer) {
         var options = new OmniSearchOptions();
         optionsConsumer.accept(options);
-        return search(entityClass, options);
+        return list(entityClass, options);
     }
 
     /**
@@ -69,9 +69,9 @@ public interface FlowOmniSearch {
      * @param <E>         the entity type
      * @return Publisher emitting a single Page of matched entities
      */
-    default <E> Flow.Publisher<Page<E>> searchPage(Class<E> entityClass, OmniSearchOptions options) {
+    default <E> Flow.Publisher<Page<E>> page(Class<E> entityClass, OmniSearchOptions options) {
         return FlowPageUtils.deferred(
-                search(entityClass, options),
+                list(entityClass, options),
                 options.getPagination(),
                 options.getSort(),
                 () -> count(entityClass, options)

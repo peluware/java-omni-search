@@ -1,8 +1,5 @@
 package com.peluware.omnisearch.rsql;
 
-import lombok.Data;
-
-@Data
 public class DefaultRsqlBuilderOptions implements RsqlBuilderOptions {
 
     private RsqlArgumentParser argumentParser;

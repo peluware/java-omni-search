@@ -24,14 +24,13 @@
  */
 package com.peluware.omnisearch.rsql;
 
-
 import java.util.List;
 
 /**
  * Interface for Argument Parser that is used for parsing given string argument
  * from RSQL query according to type of the target property.
  *
- * @author Jakub Jirutka <jakub@jirutka.cz>
+ * @author Jakub Jirutka jakub@jirutka.cz
  * @author AntonioRabelo
  */
 public interface RsqlArgumentParser {
@@ -39,13 +38,13 @@ public interface RsqlArgumentParser {
     /**
      * Parse given string argument as the specified class type.
      *
-     * @param <T> class type
+     * @param <T>      class type
      * @param argument string argument
-     * @param type class type
+     * @param type     class type
      * @return The instance of the given argument in the specified type.
      * @throws RsqlArgumentFormatException If the given argument is not parseable
-     *         to the specified type.
-     * @throws IllegalArgumentException If the specified type is not supported.
+     *                                     to the specified type.
+     * @throws IllegalArgumentException    If the specified type is not supported.
      */
     <T> T parse(String argument, Class<T> type) throws RsqlArgumentFormatException, IllegalArgumentException;
 
@@ -56,8 +55,8 @@ public interface RsqlArgumentParser {
      * @param type      type class type.
      * @return The list with instances of the given arguments in the specified type.
      * @throws RsqlArgumentFormatException If the a given argument is not parseable
-     *         to the specified type.
-     * @throws IllegalArgumentException If the specified type is not supported.
+     *                                     to the specified type.
+     * @throws IllegalArgumentException    If the specified type is not supported.
      */
     <T> List<T> parse(List<String> arguments, Class<T> type) throws RsqlArgumentFormatException, IllegalArgumentException;
 }
