@@ -89,12 +89,11 @@ import com.peluware.omnisearch.jpa.*;
 EntityManager entityManager = ...;
 OmniSearch search = new JpaOmniSearch(entityManager);
 
-Node query = new cz.jirutka.rsql.parser.RSQLParser().parse("age>25;name==*john*");
 
 List<User> users = search.list(User.class, opts -> {
     opts.setSort(Sort.by("lastName", Order.Direction.ASC));
     opts.setPagination(Pagination.of(0, 20));
-    opts.setQuery(query);
+    opts.setQuery("age>25;name==*john*");
 });
 ```
 
