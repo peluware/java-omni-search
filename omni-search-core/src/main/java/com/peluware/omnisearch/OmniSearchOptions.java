@@ -4,7 +4,7 @@ import com.peluware.domain.DefaultPagination;
 import com.peluware.domain.Order;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 import java.util.Set;
@@ -29,7 +29,7 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * {@inheritDoc}
      */
     @Override
-    public OmniSearchOptions propagations(@NotNull Set<String> propagations) {
+    public OmniSearchOptions propagations(@NonNull Set<String> propagations) {
         return (OmniSearchOptions) super.propagations(propagations);
     }
 
@@ -37,7 +37,7 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * {@inheritDoc}
      */
     @Override
-    public OmniSearchOptions propagations(String @NotNull ... propagations) {
+    public OmniSearchOptions propagations(String @NonNull ... propagations) {
         return (OmniSearchOptions) super.propagations(propagations);
     }
 
@@ -55,7 +55,7 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * @param sort the sorting criteria
      * @return the updated options
      */
-    public OmniSearchOptions sort(@NotNull Sort sort) {
+    public OmniSearchOptions sort(@NonNull Sort sort) {
         this.sort = sort;
         return this;
     }
@@ -66,7 +66,7 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * @param orders the sorting orders
      * @return the updated options
      */
-    public OmniSearchOptions sort(Order @NotNull ... orders) {
+    public OmniSearchOptions sort(Order @NonNull ... orders) {
         return sort(Sort.by(orders));
     }
 
@@ -76,7 +76,7 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * @param orders the collection of sorting orders
      * @return the updated options
      */
-    public OmniSearchOptions sort(@NotNull Collection<Order> orders) {
+    public OmniSearchOptions sort(@NonNull Collection<Order> orders) {
         return sort(Sort.by(orders));
     }
 
@@ -86,7 +86,7 @@ public class OmniSearchOptions extends OmniSearchBaseOptions {
      * @param page the pagination configuration
      * @return the updated options
      */
-    public OmniSearchOptions pagination(@NotNull Pagination page) {
+    public OmniSearchOptions pagination(@NonNull Pagination page) {
         this.pagination = page;
         return this;
     }

@@ -1,6 +1,7 @@
 package com.peluware.omnisearch;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class OmniSearchBaseOptions {
      * @param propagations entities or sub-objects to propagate search in the query
      * @return the updated options
      */
-    public OmniSearchBaseOptions propagations(@NotNull Set<String> propagations) {
+    public OmniSearchBaseOptions propagations(@NonNull Set<String> propagations) {
         this.propagations = propagations;
         return this;
     }
@@ -42,7 +43,7 @@ public class OmniSearchBaseOptions {
      * @param propagations entities o sub-objects to propagate search in the query
      * @return the updated options
      */
-    public OmniSearchBaseOptions propagations(String @NotNull ... propagations) {
+    public OmniSearchBaseOptions propagations(String @NonNull ... propagations) {
         return propagations(Set.of(propagations));
     }
 

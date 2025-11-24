@@ -6,7 +6,7 @@
 
     <groupId>com.peluware</groupId>
     <artifactId>omni-search</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <packaging>pom</packaging>
 
     <name>Omni Search</name>
@@ -53,29 +53,24 @@
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <com.peluware.domaincommons.version>1.0.3</com.peluware.domaincommons.version>
+        <com.peluware.domaincommons.version>1.0.4</com.peluware.domaincommons.version>
         <org.hibernate.reactive.version>3.1.5.Final</org.hibernate.reactive.version>
         <io.smallrye.reactive.mutiny.version>2.9.4</io.smallrye.reactive.mutiny.version>
         <cz.jirutka.rsql.parser.version>2.1.0</cz.jirutka.rsql.parser.version>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.17</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.17</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>26.0.2</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

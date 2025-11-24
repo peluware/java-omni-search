@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3251c40-baa4-4449-8b33-efda0625f291" name="Changes" comment="" />
+    <list default="true" id="c3251c40-baa4-4449-8b33-efda0625f291" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchBaseOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchBaseOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearchOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/DefaultMongoOmniSearchFilterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/DefaultMongoOmniSearchFilterBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/ReflectionUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/ReflectionUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyPageUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyPageUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -111,7 +120,9 @@
       <workItem from="1761262681611" duration="3754000" />
       <workItem from="1761323228653" duration="760000" />
       <workItem from="1763410753484" duration="441000" />
-      <workItem from="1763785561997" duration="21289000" />
+      <workItem from="1763785561997" duration="21478000" />
+      <workItem from="1763835641501" duration="400000" />
+      <workItem from="1763934127452" duration="6179000" />
     </task>
     <servers />
   </component>

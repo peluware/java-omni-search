@@ -90,11 +90,10 @@ EntityManager entityManager = ...;
 OmniSearch search = new JpaOmniSearch(entityManager);
 
 
-List<User> users = search.list(User.class, opts -> {
-    opts.setSort(Sort.by("lastName", Order.Direction.ASC));
-    opts.setPagination(Pagination.of(0, 20));
-    opts.setQuery("age>25;name==*john*");
-});
+List<User> users = search.list(User.class, new OmniSearchOptions()
+        .sort(Sort.by("lastName", Order.Direction.ASC))
+        .pagination(Pagination.of(0, 20))
+        .query("age>25;name==*john*"));
 ```
 
 #### Reactive Example with Reactive Hibernate
@@ -107,12 +106,10 @@ import io.smallrye.mutiny.Uni;
 Mutiny.SessionFactory sessionFactory = ...;
 MutinyOmniSearch search = new HibernateOmniSearch(sessionFactory);
 
-Uni<List<User>> users = search.list(User.class, opts -> {
-    opts.setSearch("john"); // Intelligent search across multiple fields
-    opts.setSort(Sort.by("lastName", Order.Direction.ASC));
-    opts.setPagination(Pagination.of(0, 20));
-});
-
+Uni<List<User>> users = search.list(User.class, new OmniSearchOptions()
+        .search("john") // Text based search
+        .sort(Sort.by("lastName", Order.Direction.ASC))
+        .pagination(Pagination.of(0, 20)));
 ```
 
 ---
@@ -128,7 +125,7 @@ Make sure your `pom.xml` contains the following dependencies:
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-core</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
 </dependency>
 ```
 
@@ -141,7 +138,7 @@ The `omni-search-jpa` module provides a ready-to-use implementation using JPA Cr
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-jpa</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
 </dependency>
 ```
 
@@ -154,7 +151,7 @@ The `omni-search-mongodb` module provides a ready-to-use implementation using Mo
 <dependency>
     <groupId>com.peluware</groupId>
     <artifactId>omni-search-mongodb</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
 </dependency>
 ```
 
@@ -167,7 +164,7 @@ The `omni-search-hibernate-reactive` module provides a ready-to-use implementati
 <dependency>
     <groupId>com.peluware</groupId>
     <module>omni-search-hibernate-reactive</module>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
 </dependency>
 ```
 

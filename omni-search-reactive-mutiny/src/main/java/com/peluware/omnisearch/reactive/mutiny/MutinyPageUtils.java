@@ -4,7 +4,7 @@ import com.peluware.domain.Page;
 import com.peluware.domain.Pagination;
 import com.peluware.domain.Sort;
 import io.smallrye.mutiny.Uni;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -16,10 +16,10 @@ public final class MutinyPageUtils {
     }
 
     public static <T> Uni<Page<T>> deferred(
-            @NotNull Uni<List<T>> contentUni,
+            @NonNull Uni<List<T>> contentUni,
             Pagination pagination,
             Sort sort,
-            @NotNull Supplier<Uni<Long>> totalElementsUniSupplier
+            @NonNull Supplier<Uni<Long>> totalElementsUniSupplier
     ) {
         return contentUni.onItem().transformToUni(content -> {
             if (pagination == null || !pagination.isPaginated()) {
@@ -39,6 +39,5 @@ public final class MutinyPageUtils {
             return totalElementsUniSupplier.get()
                     .onItem().transform(total -> new Page<>(content, pagination, sort, total));
         });
-
     }
 }
