@@ -202,7 +202,7 @@ public final class CollectionNameResolver {
             if (!QUARKUS_AVAILABLE) {
                 return Optional.empty();
             }
-            return ReflectionUtils.getAnotationStringValue(clazz, MONGO_ENTITY_ANNOTATION_CLASS, COLLECTION_METHOD);
+            return ReflectionUtils.getAnnotationStringValue(clazz, MONGO_ENTITY_ANNOTATION_CLASS, COLLECTION_METHOD);
         }
     }
 
@@ -246,7 +246,7 @@ public final class CollectionNameResolver {
             if (!MORPHIA_AVAILABLE) {
                 return Optional.empty();
             }
-            return ReflectionUtils.getAnotationStringValue(clazz, ENTITY_ANNOTATION_CLASS, VALUE_METHOD);
+            return ReflectionUtils.getAnnotationStringValue(clazz, ENTITY_ANNOTATION_CLASS, VALUE_METHOD);
         }
     }
 }

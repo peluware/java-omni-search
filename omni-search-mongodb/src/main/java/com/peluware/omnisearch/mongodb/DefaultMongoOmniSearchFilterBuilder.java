@@ -43,6 +43,8 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
      */
     protected static final Pattern OBJECT_ID_PATTERN = Pattern.compile("^[0-9a-fA-F]{24}$");
 
+    private static volatile FieldInclusionStrategy fieldInclusionStrategy = new DefaultFieldInclusionStrategy();
+
     private static final Map<Class<?>, List<Field>> BASIC_FIELDS = new ConcurrentHashMap<>();
     private static final Map<Class<?>, List<Field>> COMPLEX_FIELDS = new ConcurrentHashMap<>();
 
@@ -50,12 +52,14 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
 
     protected static List<Field> getBasicFields(Class<?> clazz) {
         return BASIC_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
+                .filter(fieldInclusionStrategy::include)
                 .filter(field -> ReflectionUtils.isBasicField(field, clazz) || ReflectionUtils.isBasicCompositeField(field, clazz))
                 .toList());
     }
 
     protected static List<Field> getComplexFields(Class<?> clazz) {
         return COMPLEX_FIELDS.computeIfAbsent(clazz, c -> Arrays.stream(c.getDeclaredFields())
+                .filter(fieldInclusionStrategy::include)
                 .filter(field -> !ReflectionUtils.isBasicField(field, clazz) && !ReflectionUtils.isBasicCompositeField(field, clazz))
                 .toList());
     }
@@ -97,7 +101,6 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
         return filters;
     }
 
-    @SuppressWarnings("java:S135")
     private <D> Bson searchInAllProperties(String search, Class<D> documentClass, Set<String> propagations) {
         // Search in direct properties
         var searchFilters = new ArrayList<>(getSearchFilters(search, documentClass, ""));
@@ -201,5 +204,11 @@ public class DefaultMongoOmniSearchFilterBuilder implements MongoOmniSearchFilte
         }
 
         return null;
+    }
+
+    public static void setFieldInclusionStrategy(FieldInclusionStrategy strategy) {
+        fieldInclusionStrategy = Objects.requireNonNull(strategy, "FieldInclusionStrategy cannot be null");
+        BASIC_FIELDS.clear();
+        COMPLEX_FIELDS.clear();
     }
 }

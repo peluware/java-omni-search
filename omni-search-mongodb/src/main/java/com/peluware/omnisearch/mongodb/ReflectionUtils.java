@@ -112,7 +112,7 @@ public final class ReflectionUtils {
         return field.getType();
     }
 
-    public static Optional<String> getAnotationStringValue(AnnotatedElement annotatedElement, Class<?> annotationClass, Method valueAccesor) {
+    public static Optional<String> getAnnotationStringValue(AnnotatedElement annotatedElement, Class<?> annotationClass, Method valueAccesor) {
         try {
             @SuppressWarnings("unchecked")
             var annotation = annotatedElement.getAnnotation((Class<? extends Annotation>) annotationClass);

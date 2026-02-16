@@ -8,7 +8,6 @@ import com.peluware.omnisearch.jpa.rsql.JpaPredicateVisitor;
 import com.peluware.omnisearch.jpa.rsql.RsqlJpaBuilderOptions;
 import com.peluware.omnisearch.utils.ParseNumber;
 import cz.jirutka.rsql.parser.RSQLParser;
-import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.PluralAttribute;
@@ -77,11 +76,16 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
                 continue;
             }
 
-            var join = root.join(joinColumn, JoinType.LEFT);
+            var join = getOrCreateLeftJoin(root, joinColumn);
             predicates.addAll(getSearchPredicates(search, join, jpaContext));
         }
 
         var cb = jpaContext.getCriteriaBuilder();
+
+        if (predicates.isEmpty()) {
+            return cb.disjunction();
+        }
+
         return cb.or(predicates.toArray(Predicate[]::new));
     }
 
@@ -132,7 +136,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
 
                     var basicPredicate = getBasicPredicates(
                             search,
-                            from.join(propertyName, JoinType.LEFT),
+                            getOrCreateLeftJoin(from, propertyName),
                             jpaContext
                     );
 
@@ -199,6 +203,16 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
         }
 
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <X, Y> Join<X, Y> getOrCreateLeftJoin(From<X, ?> from, String attribute) {
+        for (var join : from.getJoins()) {
+            if (join.getAttribute().getName().equals(attribute) && join.getJoinType() == JoinType.LEFT) {
+                return (Join<X, Y>) join;
+            }
+        }
+        return from.join(attribute, JoinType.LEFT);
     }
 
     /**
