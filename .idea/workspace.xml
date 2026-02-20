@@ -5,17 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3251c40-baa4-4449-8b33-efda0625f291" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/DefaultEntityOmniSearch.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/EntityOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/omni-search-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateOmniSearch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateReactiveJpaContext.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/omni-search-jpa/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowOmniSearch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowPageUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyOmniSearch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyPageUtils.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -145,7 +149,8 @@
       <workItem from="1764106954179" duration="1252000" />
       <workItem from="1771086206013" duration="7194000" />
       <workItem from="1771260856545" duration="5048000" />
-      <workItem from="1771622673726" duration="858000" />
+      <workItem from="1771622673726" duration="1123000" />
+      <workItem from="1771623823656" duration="1721000" />
     </task>
     <servers />
   </component>
