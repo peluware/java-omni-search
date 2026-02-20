@@ -48,4 +48,8 @@ public interface OmniSearch {
                 () -> count(entityClass, options)
         );
     }
+
+    default <Entity> EntityOmniSearch<Entity> forEntity(Class<Entity> entityClass) {
+        return new DefaultEntityOmniSearch<>(this, entityClass);
+    }
 }

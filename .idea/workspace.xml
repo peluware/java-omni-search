@@ -5,14 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3251c40-baa4-4449-8b33-efda0625f291" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/DefaultFieldInclusionStrategy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/FieldInclusionStrategy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/DefaultEntityOmniSearch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/EntityOmniSearch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/DefaultMongoOmniSearchFilterBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/DefaultMongoOmniSearchFilterBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/ReflectionUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/ReflectionUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/CollectionNameResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/CollectionNameResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/PropertyNameResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/src/main/java/com/peluware/omnisearch/mongodb/resolvers/PropertyNameResolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/src/main/java/com/peluware/omnisearch/OmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -90,7 +93,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
@@ -141,7 +144,8 @@
       <workItem from="1764104259586" duration="389000" />
       <workItem from="1764106954179" duration="1252000" />
       <workItem from="1771086206013" duration="7194000" />
-      <workItem from="1771260856545" duration="3423000" />
+      <workItem from="1771260856545" duration="5048000" />
+      <workItem from="1771622673726" duration="858000" />
     </task>
     <servers />
   </component>
