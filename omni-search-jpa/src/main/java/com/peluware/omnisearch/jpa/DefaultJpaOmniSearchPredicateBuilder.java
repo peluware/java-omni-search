@@ -76,7 +76,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
                 continue;
             }
 
-            var join = getOrCreateLeftJoin(root, joinColumn);
+            var join = JpaUtils.getOrCreateJoin(root, joinColumn, JoinType.LEFT);
             predicates.addAll(getSearchPredicates(search, join, jpaContext));
         }
 
@@ -136,7 +136,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
 
                     var basicPredicate = getBasicPredicates(
                             search,
-                            getOrCreateLeftJoin(from, propertyName),
+                            JpaUtils.getOrCreateJoin(from, propertyName, JoinType.LEFT),
                             jpaContext
                     );
 
@@ -203,16 +203,6 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
         }
 
         return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <X, Y> Join<X, Y> getOrCreateLeftJoin(From<X, ?> from, String attribute) {
-        for (var join : from.getJoins()) {
-            if (join.getAttribute().getName().equals(attribute) && join.getJoinType() == JoinType.LEFT) {
-                return (Join<X, Y>) join;
-            }
-        }
-        return from.join(attribute, JoinType.LEFT);
     }
 
     /**

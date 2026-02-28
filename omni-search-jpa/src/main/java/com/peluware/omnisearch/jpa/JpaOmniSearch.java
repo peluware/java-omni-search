@@ -58,7 +58,7 @@ public class JpaOmniSearch implements OmniSearch {
 
         var sort = options.getSort();
         if (sort.isSorted()) {
-            cq.orderBy(JpaUtils.getOrders(sort, root, cb));
+            cq.orderBy(JpaUtils.getOrders(sort, root, cb, jpaContext));
         }
 
         var pagination = options.getPagination();

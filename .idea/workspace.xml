@@ -5,22 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3251c40-baa4-4449-8b33-efda0625f291" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/JpaComplexRelationshipTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-core/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateOmniSearch.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-hibernate-reactive/src/main/java/com/peluware/omnisearch/hibernate/reactive/HibernateReactiveJpaContext.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-jpa/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-mongodb/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowOmniSearch.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-core/src/main/java/com/peluware/omnisearch/reactive/FlowPageUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyOmniSearch.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/omni-search-reactive-mutiny/src/main/java/com/peluware/omnisearch/reactive/mutiny/MutinyPageUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/DefaultJpaOmniSearchPredicateBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaOmniSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/JpaUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/JpaPredicateVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/main/java/com/peluware/omnisearch/jpa/rsql/JpaPredicateVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/JpaOmniSearchTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/omni-search-jpa/src/test/java/com/peluware/omnisearch/jpa/JpaOmniSearchTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,33 +69,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.omni-search [deploy].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.JpaComplexRelationshipTests.executor": "Run",
+    "JUnit.JpaOmniSearchTest.executor": "Run",
+    "Maven.omni-search [deploy].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.peluware.omnisearch.jpa" />
@@ -112,6 +105,28 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.peluware.omnisearch.reactive.mutiny" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="JpaComplexRelationshipTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="omni-search-jpa" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.peluware.omnisearch.jpa.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.peluware.omnisearch.jpa" />
+      <option name="MAIN_CLASS_NAME" value="com.peluware.omnisearch.jpa.JpaComplexRelationshipTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.JpaComplexRelationshipTests" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -150,7 +165,9 @@
       <workItem from="1771086206013" duration="7194000" />
       <workItem from="1771260856545" duration="5048000" />
       <workItem from="1771622673726" duration="1123000" />
-      <workItem from="1771623823656" duration="1721000" />
+      <workItem from="1771623823656" duration="1986000" />
+      <workItem from="1772046486868" duration="1089000" />
+      <workItem from="1772233983513" duration="5789000" />
     </task>
     <servers />
   </component>

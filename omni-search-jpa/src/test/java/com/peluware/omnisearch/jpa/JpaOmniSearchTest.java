@@ -67,8 +67,8 @@ class JpaOmniSearchTest {
         properties.put("jakarta.persistence.jdbc.password", postgres.getPassword());
         properties.put("hibernate.hbm2ddl.auto", "create-drop");
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.put("hibernate.show_sql", "false");
-        properties.put("hibernate.format_sql", "true");
+        properties.put("hibernate.show_sql", "true");
+        properties.put("hibernate.format_sql", "false");
 
         return Persistence.createEntityManagerFactory("test-pu", properties);
     }
@@ -76,15 +76,32 @@ class JpaOmniSearchTest {
     // Test data setup methods
     private void setupTestData() {
         // Test data
-        var alice = createUser("Alice", "alice@example.com", true, User.Level.HIGH, Set.of(User.Role.USER, User.Role.ADMIN));
+        var alice = createUser("Alice",
+                "alice@example.com",
+                true,
+                User.Level.HIGH,
+                Set.of(User.Role.USER, User.Role.ADMIN)
+        );
         alice.setContacts(Set.of(
                 createContact("Contact1", "Last1"),
                 createContact("Contact2", "Last2")
         ));
 
-        var bob = createUser("Bob", "bob@example.com", false, User.Level.MEDIUM, Set.of(User.Role.GUEST));
+        var bob = createUser(
+                "Bob",
+                "bob@example.com",
+                false,
+                User.Level.MEDIUM,
+                Set.of(User.Role.GUEST)
+        );
 
-        var dave = createUser("Dave", "charlie@example.net", true, User.Level.LOW, Set.of(User.Role.USER));
+        var dave = createUser(
+                "Dave",
+                "charlie@example.net",
+                true,
+                User.Level.LOW,
+                Set.of(User.Role.USER)
+        );
 
         em.persist(alice);
         em.persist(bob);
@@ -254,99 +271,26 @@ class JpaOmniSearchTest {
 
     }
 
+
     @Nested
-    @DisplayName("Complex Relationship Tests")
-    class ComplexRelationshipTests {
+    @DisplayName("Sort Tests")
+    class SortTests {
 
         @Test
-        @DisplayName("Should search through nested relationships - houses > country > continent")
-        void testSearchWithNestedRelationships() {
+        @DisplayName("Should sort users by name ascending")
+        void testSortByNameAscending() {
             // Given
-            setupComplexTestData();
-            omniSearch = new JpaOmniSearch(em);
-
-            var query = "houses.country.countinent.code==NA";
-            var options = new OmniSearchOptions().query(query);
+            var options = new OmniSearchOptions()
+                    .sort(com.peluware.domain.Sort.by(com.peluware.domain.Order.ascending("name")));
 
             // When
             List<User> result = omniSearch.list(User.class, options);
 
             // Then
-            assertEquals(2, result.size());
-        }
-
-        private void setupComplexTestData() {
-            em.getTransaction().begin();
-
-            // Create continents
-            var northAmerica = createContinent("NA", "North America", "North American continent");
-            var southAmerica = createContinent("SA", "South America", "South American continent");
-
-            em.persist(northAmerica);
-            em.persist(southAmerica);
-
-            // Create countries
-            var usa = createCountry("US", "United States", northAmerica);
-            var canada = createCountry("CA", "Canada", southAmerica);
-            var mexico = createCountry("MX", "Mexico", southAmerica);
-
-            em.persist(usa);
-            em.persist(canada);
-            em.persist(mexico);
-
-            // Create users with houses
-            var eve = createUserWithHouses("Eve", "eve@ovi.com", User.Level.HIGH,
-                    List.of(
-                            createHouse("House1", "123 Main St", 3, usa),
-                            createHouse("House2", "456 Elm St", 4, canada),
-                            createHouse("House3", "789 Oak St", 5, mexico)
-                    ));
-
-            var frank = createUserWithHouses("Frank", "frank@ovi.com", User.Level.MEDIUM,
-                    List.of(
-                            createHouse("House4", "321 Pine St", 2, usa),
-                            createHouse("House5", "654 Maple St", 3, canada)
-                    ));
-
-            em.persist(eve);
-            em.persist(frank);
-            em.getTransaction().commit();
-        }
-
-        private Countinent createContinent(String code, String name, String description) {
-            return Countinent.builder()
-                    .code(code)
-                    .name(name)
-                    .description(description)
-                    .build();
-        }
-
-        private Country createCountry(String code, String name, Countinent continent) {
-            return Country.builder()
-                    .code(code)
-                    .name(name)
-                    .countinent(continent)
-                    .build();
-        }
-
-        private User createUserWithHouses(String name, String email, User.Level level, List<House> houses) {
-            return User.builder()
-                    .name(name)
-                    .email(email)
-                    .active(true)
-                    .level(level)
-                    .roles(Set.of(User.Role.USER))
-                    .houses(houses)
-                    .build();
-        }
-
-        private House createHouse(String name, String address, int numberOfRooms, Country country) {
-            return House.builder()
-                    .name(name)
-                    .address(address)
-                    .numberOfRooms(numberOfRooms)
-                    .country(country)
-                    .build();
+            assertEquals(3, result.size());
+            assertEquals("Alice", result.get(0).getName());
+            assertEquals("Bob", result.get(1).getName());
+            assertEquals("Dave", result.get(2).getName());
         }
     }
 }
