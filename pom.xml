@@ -6,7 +6,7 @@
 
     <groupId>com.peluware</groupId>
     <artifactId>omni-search</artifactId>
-    <version>2.2.1</version>
+    <version>2.2.2</version>
     <packaging>pom</packaging>
 
     <name>Omni Search</name>
@@ -115,16 +115,6 @@
                 <groupId>com.peluware</groupId>
                 <artifactId>domain-commons</artifactId>
                 <version>${com.peluware.domaincommons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate.reactive</groupId>
-                <artifactId>hibernate-reactive-core</artifactId>
-                <version>${org.hibernate.reactive.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.smallrye.reactive</groupId>
-                <artifactId>mutiny</artifactId>
-                <version>${io.smallrye.reactive.mutiny.version}</version>
             </dependency>
             <dependency>
                 <groupId>cz.jirutka.rsql</groupId>

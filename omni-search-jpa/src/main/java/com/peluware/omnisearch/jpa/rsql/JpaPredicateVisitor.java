@@ -27,25 +27,20 @@ import com.peluware.omnisearch.jpa.JpaContext;
 import com.peluware.omnisearch.jpa.JpaUtils;
 import cz.jirutka.rsql.parser.ast.*;
 import jakarta.persistence.criteria.*;
-import jakarta.persistence.metamodel.Attribute;
-import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
-import jakarta.persistence.metamodel.ManagedType;
-import jakarta.persistence.metamodel.PluralAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> {
 
     private static final Logger log = LoggerFactory.getLogger(JpaPredicateVisitor.class);
 
-    private final Root<T> root;
+    private final Path<T> path;
 
-    public JpaPredicateVisitor(Root<T> root, RsqlJpaBuilderOptions builderTools) {
-        super(root.getJavaType(), builderTools);
-        this.root = root;
+    public JpaPredicateVisitor(Path<T> path, RsqlJpaBuilderOptions builderTools) {
+        super(path.getJavaType(), builderTools);
+        this.path = path;
     }
 
     @Override
@@ -67,12 +62,12 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> {
 
         var argumentParser = builderOptions.getArgumentParser();
 
-        var path = JpaUtils.findPath(node.getSelector(), root, jpaContext);
+        var path = JpaUtils.findPath(node.getSelector(), this.path, jpaContext);
         var type = path.getModel().getBindableJavaType();
 
         log.trace("Cast all arguments to type {}.", type.getName());
-        var castedArguments = argumentParser.parse(node.getArguments(), type);
 
+        var castedArguments = argumentParser.parse(node.getArguments(), type);
         var comparisionPredicateBuilder = builderOptions.getComparisionPredicateBuilder();
 
         return comparisionPredicateBuilder.buildComparisionPredicate(

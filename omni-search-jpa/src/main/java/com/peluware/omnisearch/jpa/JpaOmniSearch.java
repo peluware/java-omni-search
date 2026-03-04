@@ -62,17 +62,18 @@ public class JpaOmniSearch implements OmniSearch {
         }
 
         var pagination = options.getPagination();
-        if (!pagination.isPaginated()) {
+        if (pagination.isPaginated()) {
             return entityManager
                     .createQuery(cq)
+                    .setFirstResult(pagination.getNumber() * pagination.getSize())
+                    .setMaxResults(pagination.getSize())
                     .getResultList();
         }
 
         return entityManager
                 .createQuery(cq)
-                .setFirstResult(pagination.getNumber() * pagination.getSize())
-                .setMaxResults(pagination.getSize())
                 .getResultList();
+
     }
 
 

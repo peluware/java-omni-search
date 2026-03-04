@@ -1,6 +1,7 @@
 package com.peluware.omnisearch.jpa;
 
 import com.peluware.omnisearch.OmniSearchBaseOptions;
+import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -20,5 +21,5 @@ public interface JpaOmniSearchPredicateBuilder {
      * @param <E>        the type of the root entity
      * @return a {@link Predicate} for use in JPA criteria queries
      */
-    <E> Predicate buildPredicate(JpaContext jpaContext, Root<E> root, OmniSearchBaseOptions options);
+    <E> Predicate buildPredicate(JpaContext jpaContext, From<?, E> root, OmniSearchBaseOptions options);
 }

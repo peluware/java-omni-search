@@ -15,7 +15,7 @@ public final class JpaUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static <E> List<Order> getOrders(Sort sort, Root<E> root, CriteriaBuilder cb, JpaContext jpaContext) {
+    public static List<Order> getOrders(Sort sort, Path<?> root, CriteriaBuilder cb, JpaContext jpaContext) {
         return sort.orders().stream()
                 .map(order -> {
                     var path = findPath(order.property(), root, jpaContext, JoinType.LEFT);
@@ -130,9 +130,8 @@ public final class JpaUtils {
     }
 
 
-    @SuppressWarnings("unchecked")
-    public static <Z, X> Join<Z, X> getOrCreateJoin(From<Z, X> from, String attribute, JoinType joinType) {
-        return (Join<Z, X>) from.getJoins().stream()
+    public static Join<?, ?> getOrCreateJoin(From<?, ?> from, String attribute, JoinType joinType) {
+        return from.getJoins().stream()
                 .filter(join -> join.getAttribute().getName().equals(attribute) && join.getJoinType() == joinType)
                 .findFirst()
                 .orElseGet(() -> from.join(attribute, joinType));

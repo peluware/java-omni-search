@@ -59,24 +59,24 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
      * Builds a {@link Predicate} that searches across all basic, embeddable, and simple element collection fields.
      *
      * @param search      the search keyword
-     * @param root        the root entity
+     * @param from        the root entity
      * @param jpaContext  the JPA context
      * @param joinColumns the associations to join for searching
      * @param <E>         the entity type
      * @return a combined OR predicate for all matched fields
      */
-    protected <E> Predicate searchInAllColumns(@NonNull String search, Root<E> root, JpaContext jpaContext, Set<String> joinColumns
+    protected <E> Predicate searchInAllColumns(@NonNull String search, From<?, E> from, JpaContext jpaContext, Set<String> joinColumns
     ) {
-        var predicates = new ArrayList<>(getSearchPredicates(search, root, jpaContext));
+        var predicates = new ArrayList<>(getSearchPredicates(search, from, jpaContext));
 
-        var managedType = jpaContext.getMetamodel().managedType(root.getJavaType());
+        var managedType = jpaContext.getMetamodel().managedType(from.getJavaType());
         for (var joinColumn : joinColumns) {
             if (!managedType.getAttribute(joinColumn).isAssociation()) {
                 log.trace("Join column '{}' is not an association in {}", joinColumn, managedType.getJavaType().getName());
                 continue;
             }
 
-            var join = JpaUtils.getOrCreateJoin(root, joinColumn, JoinType.LEFT);
+            var join = JpaUtils.getOrCreateJoin(from, joinColumn, JoinType.LEFT);
             predicates.addAll(getSearchPredicates(search, join, jpaContext));
         }
 
@@ -209,19 +209,19 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
      * {@inheritDoc}
      */
     @Override
-    public <M> Predicate buildPredicate(JpaContext jpaContext, Root<M> root, OmniSearchBaseOptions options) {
+    public <E> Predicate buildPredicate(JpaContext jpaContext, From<?, E> from, OmniSearchBaseOptions options) {
         var cb = jpaContext.getCriteriaBuilder();
         var predicate = cb.conjunction();
 
         var search = options.getSearch();
         if (search != null && !search.isBlank()) {
-            predicate = searchInAllColumns(search, root, jpaContext, options.getPropagations());
+            predicate = searchInAllColumns(search, from, jpaContext, options.getPropagations());
         }
 
         var query = options.getQuery();
         if (query != null) {
             var node = rsqlParser.parse(query);
-            var visitor = new JpaPredicateVisitor<>(root, rsqlJpaBuilderOptions);
+            var visitor = new JpaPredicateVisitor<>(from, rsqlJpaBuilderOptions);
             var queryPredicates = node.accept(visitor, jpaContext);
             predicate = cb.and(predicate, queryPredicates);
         }
