@@ -48,12 +48,15 @@ public class JpaOmniSearch implements OmniSearch {
      */
     @Override
     public <E> List<E> list(Class<E> entityClass, OmniSearchOptions options) {
+        return list(entityClass, options, Map.of());
+    }
+
+    public <E> List<E> list(Class<E> entityClass, OmniSearchOptions options, Map<String, Object> hints) {
         var cb = entityManager.getCriteriaBuilder();
         var cq = cb.createQuery(entityClass);
         var root = cq.from(entityClass);
 
         var predicate = predicateBuilder.buildPredicate(jpaContext, root, options);
-
         cq.where(predicate);
 
         var sort = options.getSort();
@@ -61,19 +64,18 @@ public class JpaOmniSearch implements OmniSearch {
             cq.orderBy(JpaUtils.getOrders(sort, root, cb, jpaContext));
         }
 
+        var query = entityManager.createQuery(cq);
+
+        hints.forEach(query::setHint);
+
         var pagination = options.getPagination();
         if (pagination.isPaginated()) {
-            return entityManager
-                    .createQuery(cq)
-                    .setFirstResult(pagination.getNumber() * pagination.getSize())
-                    .setMaxResults(pagination.getSize())
-                    .getResultList();
+            query
+                .setFirstResult(pagination.getNumber() * pagination.getSize())
+                .setMaxResults(pagination.getSize());
         }
 
-        return entityManager
-                .createQuery(cq)
-                .getResultList();
-
+        return query.getResultList();
     }
 
 
@@ -87,6 +89,10 @@ public class JpaOmniSearch implements OmniSearch {
      */
     @Override
     public <E> long count(Class<E> entityClass, OmniSearchBaseOptions options) {
+        return count(entityClass, options, Map.of());
+    }
+
+    public <E> long count(Class<E> entityClass, OmniSearchBaseOptions options, Map<String, Object> hints) {
 
         var cb = entityManager.getCriteriaBuilder();
         var cq = cb.createQuery(Long.class);
@@ -98,9 +104,11 @@ public class JpaOmniSearch implements OmniSearch {
                 .where(predicate)
                 .select(cb.count(root));
 
-        return entityManager
-                .createQuery(cq)
-                .getSingleResult();
+        var query = entityManager.createQuery(cq);
+
+        hints.forEach(query::setHint);
+
+        return query.getSingleResult();
     }
 
 }
