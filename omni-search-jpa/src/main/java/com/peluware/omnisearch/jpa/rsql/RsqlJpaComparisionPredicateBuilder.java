@@ -1,8 +1,8 @@
 package com.peluware.omnisearch.jpa.rsql;
 
-import com.peluware.omnisearch.jpa.JpaContext;
 import com.peluware.omnisearch.rsql.RsqlUnknowComparisionOperatorException;
 import cz.jirutka.rsql.parser.ast.ComparisonOperator;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface RsqlJpaComparisionPredicateBuilder {
      * @param propertyPath the expression representing the entity property
      * @param operator     the RSQL comparison operator
      * @param arguments    the values to compare against
-     * @param jpaContext      the JPA context
+     * @param cb           the criteria builder
      * @return a {@link Predicate} representing the comparison
      * @throws RsqlUnknowComparisionOperatorException if the operator is not supported
      */
@@ -26,6 +26,6 @@ public interface RsqlJpaComparisionPredicateBuilder {
             Expression<?> propertyPath,
             ComparisonOperator operator,
             List<?> arguments,
-            JpaContext jpaContext
+            CriteriaBuilder cb
     ) throws RsqlUnknowComparisionOperatorException;
 }

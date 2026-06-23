@@ -17,12 +17,10 @@ import java.util.*;
 public class JpaOmniSearch implements OmniSearch {
 
     private final EntityManager entityManager;
-    private final JpaContext jpaContext;
     private final JpaOmniSearchPredicateBuilder predicateBuilder;
 
     public JpaOmniSearch(EntityManager entityManager, JpaOmniSearchPredicateBuilder predicateBuilder) {
         this.entityManager = entityManager;
-        this.jpaContext = JpaContext.of(entityManager);
         this.predicateBuilder = predicateBuilder;
     }
 
@@ -56,12 +54,12 @@ public class JpaOmniSearch implements OmniSearch {
         var cq = cb.createQuery(entityClass);
         var root = cq.from(entityClass);
 
-        var predicate = predicateBuilder.buildPredicate(jpaContext, root, options);
+        var predicate = predicateBuilder.buildPredicate(root, options, cb, entityManager.getMetamodel());
         cq.where(predicate);
 
         var sort = options.getSort();
         if (sort.isSorted()) {
-            cq.orderBy(JpaUtils.getOrders(sort, root, cb, jpaContext));
+            cq.orderBy(JpaUtils.getOrders(sort, root, cb, entityManager.getMetamodel()));
         }
 
         var query = entityManager.createQuery(cq);
@@ -98,7 +96,7 @@ public class JpaOmniSearch implements OmniSearch {
         var cq = cb.createQuery(Long.class);
         var root = cq.from(entityClass);
 
-        var predicate = predicateBuilder.buildPredicate(jpaContext, root, options);
+        var predicate = predicateBuilder.buildPredicate(root, options, cb, entityManager.getMetamodel());
 
         cq
                 .where(predicate)

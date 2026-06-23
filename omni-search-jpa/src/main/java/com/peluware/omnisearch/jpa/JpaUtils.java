@@ -4,6 +4,7 @@ import com.peluware.domain.Sort;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.ManagedType;
+import jakarta.persistence.metamodel.Metamodel;
 import jakarta.persistence.metamodel.PluralAttribute;
 
 import java.util.List;
@@ -15,10 +16,10 @@ public final class JpaUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static List<Order> getOrders(Sort sort, Path<?> root, CriteriaBuilder cb, JpaContext jpaContext) {
+    public static List<Order> getOrders(Sort sort, Path<?> root, CriteriaBuilder cb, Metamodel metamodel) {
         return sort.orders().stream()
                 .map(order -> {
-                    var path = findPath(order.property(), root, jpaContext, JoinType.LEFT);
+                    var path = findPath(order.property(), root, metamodel, JoinType.LEFT);
                     return order.direction() == com.peluware.domain.Order.Direction.ASC
                             ? cb.asc(path)
                             : cb.desc(path);
@@ -31,12 +32,12 @@ public final class JpaUtils {
      *
      * @param path       The property path to find.
      * @param startRoot  From that property path depends on.
-     * @param jpaContext JPA Context to access the metamodel and criteria builder.
+     * @param metamodel  the metamodel used to resolve attribute paths.
      * @return The Path for the property path
      * @throws IllegalArgumentException if attribute of the given property name does not exist
      */
-    public static Path<?> findPath(String path, Path<?> startRoot, JpaContext jpaContext) {
-        return findPath(path, startRoot, jpaContext, JoinType.INNER);
+    public static Path<?> findPath(String path, Path<?> startRoot, Metamodel metamodel) {
+        return findPath(path, startRoot, metamodel, JoinType.INNER);
     }
 
 
@@ -45,16 +46,15 @@ public final class JpaUtils {
      *
      * @param path       The property path to find.
      * @param startRoot  From that property path depends on.
-     * @param jpaContext JPA Context to access the metamodel and criteria builder.
+     * @param metamodel  the metamodel used to resolve attribute paths.
      * @param joinType   The type of join to use for associations and element collections.
      * @return The Path for the property path
      * @throws IllegalArgumentException if attribute of the given property name does not exist
      */
-    public static Path<?> findPath(String path, Path<?> startRoot, JpaContext jpaContext, JoinType joinType) {
+    public static Path<?> findPath(String path, Path<?> startRoot, Metamodel metamodel, JoinType joinType) {
         var graph = path.split("\\.");
 
-        var metaModel = jpaContext.getMetamodel();
-        var classMetadata = metaModel.managedType(startRoot.getJavaType());
+        var classMetadata = metamodel.managedType(startRoot.getJavaType());
         var currentRoot = startRoot;
 
         var graphLength = graph.length;
@@ -71,12 +71,12 @@ public final class JpaUtils {
 
             if (jpaAttribute.isAssociation()) {
 
-                classMetadata = metaModel.managedType(attributeType);
+                classMetadata = metamodel.managedType(attributeType);
                 currentRoot = getOrCreateJoin((From<?, ?>) currentRoot, attribute, joinType);
 
             } else if (persistentAttributeType == Attribute.PersistentAttributeType.EMBEDDED) {
 
-                classMetadata = metaModel.embeddable(attributeType);
+                classMetadata = metamodel.embeddable(attributeType);
                 currentRoot = currentRoot.get(attribute);
 
             } else if (persistentAttributeType == Attribute.PersistentAttributeType.ELEMENT_COLLECTION) {

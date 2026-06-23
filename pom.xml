@@ -6,7 +6,7 @@
 
     <groupId>com.peluware</groupId>
     <artifactId>omni-search</artifactId>
-    <version>2.2.2</version>
+    <version>2.3.0</version>
     <packaging>pom</packaging>
 
     <name>Omni Search</name>
@@ -188,7 +188,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.6.0</version>
+                <version>0.11.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>

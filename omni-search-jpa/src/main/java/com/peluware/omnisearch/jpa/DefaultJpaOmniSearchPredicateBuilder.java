@@ -10,6 +10,7 @@ import com.peluware.omnisearch.utils.ParseNumber;
 import cz.jirutka.rsql.parser.RSQLParser;
 import jakarta.persistence.criteria.*;
 import jakarta.persistence.metamodel.Attribute;
+import jakarta.persistence.metamodel.Metamodel;
 import jakarta.persistence.metamodel.PluralAttribute;
 import jakarta.persistence.metamodel.Type;
 import org.jspecify.annotations.NonNull;
@@ -58,18 +59,18 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
     /**
      * Builds a {@link Predicate} that searches across all basic, embeddable, and simple element collection fields.
      *
-     * @param search      the search keyword
-     * @param from        the root entity
-     * @param jpaContext  the JPA context
-     * @param joinColumns the associations to join for searching
-     * @param <E>         the entity type
+     * @param search          the search keyword
+     * @param from            the root entity
+     * @param joinColumns     the associations to join for searching
+     * @param criteriaBuilder the criteria builder
+     * @param metamodel       the metamodel used to resolve attributes
+     * @param <E>             the entity type
      * @return a combined OR predicate for all matched fields
      */
-    protected <E> Predicate searchInAllColumns(@NonNull String search, From<?, E> from, JpaContext jpaContext, Set<String> joinColumns
-    ) {
-        var predicates = new ArrayList<>(getSearchPredicates(search, from, jpaContext));
+    protected <E> Predicate searchInAllColumns(@NonNull String search, From<?, E> from, Set<String> joinColumns, CriteriaBuilder criteriaBuilder, Metamodel metamodel) {
+        var predicates = new ArrayList<>(getSearchPredicates(search, from, criteriaBuilder, metamodel));
 
-        var managedType = jpaContext.getMetamodel().managedType(from.getJavaType());
+        var managedType = metamodel.managedType(from.getJavaType());
         for (var joinColumn : joinColumns) {
             if (!managedType.getAttribute(joinColumn).isAssociation()) {
                 log.trace("Join column '{}' is not an association in {}", joinColumn, managedType.getJavaType().getName());
@@ -77,30 +78,29 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
             }
 
             var join = JpaUtils.getOrCreateJoin(from, joinColumn, JoinType.LEFT);
-            predicates.addAll(getSearchPredicates(search, join, jpaContext));
+            predicates.addAll(getSearchPredicates(search, join, criteriaBuilder, metamodel));
         }
-
-        var cb = jpaContext.getCriteriaBuilder();
 
         if (predicates.isEmpty()) {
-            return cb.disjunction();
+            return criteriaBuilder.disjunction();
         }
 
-        return cb.or(predicates.toArray(Predicate[]::new));
+        return criteriaBuilder.or(predicates.toArray(Predicate[]::new));
     }
 
     /**
      * Retrieves a list of predicates for all eligible attributes under a given {@link Path}.
      *
-     * @param search     the search keyword
-     * @param path       the current path to inspect
-     * @param jpaContext the JPA context
+     * @param search          the search keyword
+     * @param path            the current path to inspect
+     * @param criteriaBuilder the criteria builder
+     * @param metamodel       the metamodel used to resolve attributes
      * @return a collection of predicates matching the search keyword
      */
     @SuppressWarnings("java:S3776")
-    protected Collection<Predicate> getSearchPredicates(String search, Path<?> path, JpaContext jpaContext) {
+    protected Collection<Predicate> getSearchPredicates(String search, Path<?> path, CriteriaBuilder criteriaBuilder, Metamodel metamodel) {
         var javaType = path.getJavaType();
-        var managedType = jpaContext.getMetamodel().managedType(javaType);
+        var managedType = metamodel.managedType(javaType);
         var predicates = new ArrayList<Predicate>();
 
         for (var attribute : managedType.getAttributes()) {
@@ -114,7 +114,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
                     var basicPredicate = getBasicPredicates(
                             search,
                             path.get(propertyName),
-                            jpaContext
+                            criteriaBuilder
                     );
 
                     if (basicPredicate != null) {
@@ -125,7 +125,8 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
                     var embeddedPredicates = getSearchPredicates(
                             search,
                             path.get(propertyName),
-                            jpaContext
+                            criteriaBuilder,
+                            metamodel
                     );
 
                     predicates.addAll(embeddedPredicates);
@@ -137,7 +138,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
                     var basicPredicate = getBasicPredicates(
                             search,
                             JpaUtils.getOrCreateJoin(from, propertyName, JoinType.LEFT),
-                            jpaContext
+                            criteriaBuilder
                     );
 
                     if (basicPredicate != null) {
@@ -157,31 +158,30 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
     /**
      * Builds predicates for simple types like String, UUID, Number, Boolean, Year, and Enums.
      *
-     * @param search     the search term
-     * @param path       the path to the attribute
-     * @param jpaContext the JPA context
+     * @param search          the search term
+     * @param path            the path to the attribute
+     * @param criteriaBuilder the criteria builder
      * @return a collection of predicates
      */
     @SuppressWarnings("java:S3776")
-    protected @Nullable Predicate getBasicPredicates(String search, Path<?> path, JpaContext jpaContext) {
+    protected @Nullable Predicate getBasicPredicates(String search, Path<?> path, CriteriaBuilder criteriaBuilder) {
         var type = path.getJavaType();
-        var cb = jpaContext.getCriteriaBuilder();
 
         if (String.class.isAssignableFrom(type)) {
-            return cb.like(cb.lower(path.as(String.class)), "%" + search.toLowerCase() + "%");
+            return criteriaBuilder.like(criteriaBuilder.lower(path.as(String.class)), "%" + search.toLowerCase() + "%");
         }
 
         if (UUID.class.isAssignableFrom(type) && UUID_PATTERN.matcher(search).matches()) {
-            return cb.equal(path, UUID.fromString(search));
+            return criteriaBuilder.equal(path, UUID.fromString(search));
         }
 
 
         if ((Boolean.class.isAssignableFrom(type) || type == boolean.class) && search.matches("true|false")) {
-            return cb.equal(path, Boolean.parseBoolean(search));
+            return criteriaBuilder.equal(path, Boolean.parseBoolean(search));
         }
 
         if (Year.class.isAssignableFrom(type) && search.matches("\\d{4}")) {
-            return cb.equal(path, Year.parse(search));
+            return criteriaBuilder.equal(path, Year.parse(search));
         }
 
         if (type.isEnum()) {
@@ -197,7 +197,7 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
         if ((Number.class.isAssignableFrom(type) || type.isPrimitive()) && search.matches("[+-]?\\d*\\.?\\d+")) {
             for (var parser : ParseNumber.PARSERS) {
                 if (type.isAssignableFrom(parser.type())) {
-                    return cb.equal(path, parser.parse(search));
+                    return criteriaBuilder.equal(path, parser.parse(search));
                 }
             }
         }
@@ -209,21 +209,20 @@ public class DefaultJpaOmniSearchPredicateBuilder implements JpaOmniSearchPredic
      * {@inheritDoc}
      */
     @Override
-    public <E> Predicate buildPredicate(JpaContext jpaContext, From<?, E> from, OmniSearchBaseOptions options) {
-        var cb = jpaContext.getCriteriaBuilder();
-        var predicate = cb.conjunction();
+    public <E> Predicate buildPredicate(From<?, E> from, OmniSearchBaseOptions options, CriteriaBuilder criteriaBuilder, Metamodel metamodel) {
+        var predicate = criteriaBuilder.conjunction();
 
         var search = options.getSearch();
         if (search != null && !search.isBlank()) {
-            predicate = searchInAllColumns(search, from, jpaContext, options.getPropagations());
+            predicate = searchInAllColumns(search, from, options.getPropagations(), criteriaBuilder, metamodel);
         }
 
         var query = options.getQuery();
         if (query != null) {
             var node = rsqlParser.parse(query);
-            var visitor = new JpaPredicateVisitor<>(from, rsqlJpaBuilderOptions);
-            var queryPredicates = node.accept(visitor, jpaContext);
-            predicate = cb.and(predicate, queryPredicates);
+            var visitor = new JpaPredicateVisitor<>(from, rsqlJpaBuilderOptions, criteriaBuilder, metamodel);
+            var queryPredicates = node.accept(visitor);
+            predicate = criteriaBuilder.and(predicate, queryPredicates);
         }
 
         return predicate;

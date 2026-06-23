@@ -24,7 +24,6 @@
  */
 package com.peluware.omnisearch.jpa.rsql;
 
-import com.peluware.omnisearch.jpa.JpaContext;
 import com.peluware.omnisearch.rsql.RsqlUnknowComparisionOperatorException;
 import cz.jirutka.rsql.parser.ast.*;
 import jakarta.persistence.criteria.*;
@@ -54,115 +53,115 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
     }
 
     @Override
-    public Predicate buildComparisionPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, JpaContext jpaContext) throws RsqlUnknowComparisionOperatorException {
+    public Predicate buildComparisionPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, CriteriaBuilder cb) throws RsqlUnknowComparisionOperatorException {
         log.trace("Creating predicate: propertyPath {} {}", operator, arguments);
 
         if (RSQLOperators.EQUAL.equals(operator)) {
-            return equalPredicate(propertyPath, arguments, jpaContext);
+            return equalPredicate(propertyPath, arguments, cb);
         }
         if (RSQLOperators.NOT_EQUAL.equals(operator)) {
-            return notEqualPredicate(propertyPath, arguments, jpaContext);
+            return notEqualPredicate(propertyPath, arguments, cb);
         }
         if (RSQLOperators.GREATER_THAN.equals(operator)) {
-            return greaterThanPredicate(propertyPath, operator, arguments, jpaContext);
+            return greaterThanPredicate(propertyPath, operator, arguments, cb);
         }
         if (RSQLOperators.GREATER_THAN_OR_EQUAL.equals(operator)) {
-            return greaterThanOrEqualPredicate(propertyPath, operator, jpaContext, arguments);
+            return greaterThanOrEqualPredicate(propertyPath, operator, cb, arguments);
         }
         if (RSQLOperators.LESS_THAN.equals(operator)) {
-            return lessThanPredicate(propertyPath, operator, arguments, jpaContext);
+            return lessThanPredicate(propertyPath, operator, arguments, cb);
         }
         if (RSQLOperators.LESS_THAN_OR_EQUAL.equals(operator)) {
-            return lessThanOrEqualPredicate(propertyPath, operator, arguments, jpaContext);
+            return lessThanOrEqualPredicate(propertyPath, operator, arguments, cb);
         }
         if (RSQLOperators.IN.equals(operator)) {
             return createIn(propertyPath, arguments);
         }
         if (RSQLOperators.NOT_IN.equals(operator)) {
-            return createNotIn(propertyPath, arguments, jpaContext);
+            return createNotIn(propertyPath, arguments, cb);
         }
 
         throw new RsqlUnknowComparisionOperatorException(operator.getSymbol());
     }
 
-    private Predicate lessThanOrEqualPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, JpaContext jpaContext) {
+    private Predicate lessThanOrEqualPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, CriteriaBuilder cb) {
         var argument = arguments.getFirst();
         if (argument instanceof Date casted) {
-            return createBetweenThan((Expression<? extends Date>) propertyPath, START_DATE, casted, jpaContext);
+            return createBetweenThan((Expression<? extends Date>) propertyPath, START_DATE, casted, cb);
         }
         if (argument instanceof Number casted) {
-            return createLessEqual((Expression<? extends Number>) propertyPath, casted, jpaContext);
+            return createLessEqual((Expression<? extends Number>) propertyPath, casted, cb);
         }
         if (argument instanceof Comparable casted) {
-            return createLessEqualComparable((Expression<? extends Comparable>) propertyPath, casted, jpaContext);
+            return createLessEqualComparable((Expression<? extends Comparable>) propertyPath, casted, cb);
         }
         throw new IllegalArgumentException(buildNotComparableMessage(operator, argument));
     }
 
-    private Predicate lessThanPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, JpaContext jpaContext) {
+    private Predicate lessThanPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, CriteriaBuilder cb) {
         var argument = arguments.getFirst();
         if (argument instanceof Date casted) {
             int days = -1;
-            return createBetweenThan((Expression<? extends Date>) propertyPath, START_DATE, modifyDate(casted, days), jpaContext);
+            return createBetweenThan((Expression<? extends Date>) propertyPath, START_DATE, modifyDate(casted, days), cb);
         }
         if (argument instanceof Number casted) {
-            return createLessThan((Expression<? extends Number>) propertyPath, casted, jpaContext);
+            return createLessThan((Expression<? extends Number>) propertyPath, casted, cb);
         }
         if (argument instanceof Comparable casted) {
-            return createLessThanComparable((Expression<? extends Comparable>) propertyPath, casted, jpaContext);
+            return createLessThanComparable((Expression<? extends Comparable>) propertyPath, casted, cb);
         }
         throw new IllegalArgumentException(buildNotComparableMessage(operator, argument));
     }
 
-    private Predicate greaterThanOrEqualPredicate(Expression<?> propertyPath, ComparisonOperator operator, JpaContext jpaContext, List<?> arguments) {
+    private Predicate greaterThanOrEqualPredicate(Expression<?> propertyPath, ComparisonOperator operator, CriteriaBuilder cb, List<?> arguments) {
         var argument = arguments.getFirst();
         if (argument instanceof Date casted) {
-            return createBetweenThan((Expression<? extends Date>) propertyPath, casted, END_DATE, jpaContext);
+            return createBetweenThan((Expression<? extends Date>) propertyPath, casted, END_DATE, cb);
         }
         if (argument instanceof Number casted) {
-            return createGreaterEqual((Expression<? extends Number>) propertyPath, casted, jpaContext);
+            return createGreaterEqual((Expression<? extends Number>) propertyPath, casted, cb);
         }
         if (argument instanceof Comparable casted) {
-            return createGreaterEqualComparable((Expression<? extends Comparable>) propertyPath, casted, jpaContext);
+            return createGreaterEqualComparable((Expression<? extends Comparable>) propertyPath, casted, cb);
         }
         throw new IllegalArgumentException(buildNotComparableMessage(operator, argument));
     }
 
-    private Predicate greaterThanPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, JpaContext jpaContext) {
+    private Predicate greaterThanPredicate(Expression<?> propertyPath, ComparisonOperator operator, List<?> arguments, CriteriaBuilder cb) {
         var argument = arguments.getFirst();
         if (argument instanceof Date casted) {
             int days = 1;
-            return createBetweenThan((Expression<? extends Date>) propertyPath, modifyDate(casted, days), END_DATE, jpaContext);
+            return createBetweenThan((Expression<? extends Date>) propertyPath, modifyDate(casted, days), END_DATE, cb);
         }
         if (argument instanceof Number casted) {
-            return createGreaterThan((Expression<? extends Number>) propertyPath, casted, jpaContext);
+            return createGreaterThan((Expression<? extends Number>) propertyPath, casted, cb);
         }
         if (argument instanceof Comparable casted) {
-            return createGreaterThanComparable((Expression<? extends Comparable>) propertyPath, casted, jpaContext);
+            return createGreaterThanComparable((Expression<? extends Comparable>) propertyPath, casted, cb);
         }
         throw new IllegalArgumentException(buildNotComparableMessage(operator, argument));
     }
 
-    protected Predicate notEqualPredicate(Expression<?> propertyPath, List<?> arguments, JpaContext jpaContext) {
+    protected Predicate notEqualPredicate(Expression<?> propertyPath, List<?> arguments, CriteriaBuilder cb) {
         var argument = arguments.getFirst();
         if (argument instanceof String casted) {
-            return createNotLike((Expression<String>) propertyPath, casted, jpaContext);
+            return createNotLike((Expression<String>) propertyPath, casted, cb);
         }
         if (isNullArgument(argument)) {
-            return createIsNotNull(propertyPath, jpaContext);
+            return createIsNotNull(propertyPath, cb);
         }
-        return createNotEqual(propertyPath, argument, jpaContext);
+        return createNotEqual(propertyPath, argument, cb);
     }
 
-    protected Predicate equalPredicate(Expression<?> propertyPath, List<?> arguments, JpaContext jpaContext) {
+    protected Predicate equalPredicate(Expression<?> propertyPath, List<?> arguments, CriteriaBuilder cb) {
         var argument = arguments.getFirst();
         if (argument instanceof String casted) {
-            return createLike((Expression<String>) propertyPath, casted, jpaContext);
+            return createLike((Expression<String>) propertyPath, casted, cb);
         }
         if (isNullArgument(argument)) {
-            return createIsNull(propertyPath, jpaContext);
+            return createIsNull(propertyPath, cb);
         }
-        return createEqual(propertyPath, argument, jpaContext);
+        return createEqual(propertyPath, argument, cb);
     }
 
     /**
@@ -171,12 +170,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      * @param propertyPath the property path
      * @param start        the start date
      * @param end          the argument
-     * @param jpaContext   the manager
+     * @param cb           the criteria builder
      * @return the predicate
      */
-    protected Predicate createBetweenThan(Expression<? extends Date> propertyPath, Date start, Date end, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.between(propertyPath, start, end);
+    protected Predicate createBetweenThan(Expression<? extends Date> propertyPath, Date start, Date end, CriteriaBuilder cb) {
+        return cb.between(propertyPath, start, end);
     }
 
     /**
@@ -185,25 +183,23 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument with/without wildcards
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createLike(Expression<String> propertyPath, String argument, JpaContext jpaContext) {
+    protected Predicate createLike(Expression<String> propertyPath, String argument, CriteriaBuilder cb) {
         var like = argument.replace(LIKE_WILDCARD, '%');
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.like(builder.lower(propertyPath), like.toLowerCase());
+        return cb.like(cb.lower(propertyPath), like.toLowerCase());
     }
 
     /**
      * Apply an "is null" constraint to the property path.
      *
      * @param propertyPath Property path that we want to compare.
-     * @param JpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createIsNull(Expression<?> propertyPath, JpaContext JpaContext) {
-        var builder = JpaContext.getCriteriaBuilder();
-        return builder.isNull(propertyPath);
+    protected Predicate createIsNull(Expression<?> propertyPath, CriteriaBuilder cb) {
+        return cb.isNull(propertyPath);
     }
 
     /**
@@ -211,12 +207,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument
-     * @param JpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createEqual(Expression<?> propertyPath, Object argument, JpaContext JpaContext) {
-        var builder = JpaContext.getCriteriaBuilder();
-        return builder.equal(propertyPath, argument);
+    protected Predicate createEqual(Expression<?> propertyPath, Object argument, CriteriaBuilder cb) {
+        return cb.equal(propertyPath, argument);
     }
 
     /**
@@ -224,12 +219,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createNotEqual(Expression<?> propertyPath, Object argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.notEqual(propertyPath, argument);
+    protected Predicate createNotEqual(Expression<?> propertyPath, Object argument, CriteriaBuilder cb) {
+        return cb.notEqual(propertyPath, argument);
     }
 
     /**
@@ -238,24 +232,22 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument with/without wildcards
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createNotLike(Expression<String> propertyPath, String argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.not(createLike(propertyPath, argument, jpaContext));
+    protected Predicate createNotLike(Expression<String> propertyPath, String argument, CriteriaBuilder cb) {
+        return cb.not(createLike(propertyPath, argument, cb));
     }
 
     /**
      * Apply an "is not null" constraint to the property path.
      *
      * @param propertyPath Property path that we want to compare.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createIsNotNull(Expression<?> propertyPath, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.isNotNull(propertyPath);
+    protected Predicate createIsNotNull(Expression<?> propertyPath, CriteriaBuilder cb) {
+        return cb.isNotNull(propertyPath);
     }
 
     /**
@@ -263,12 +255,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument number.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createGreaterThan(Expression<? extends Number> propertyPath, Number argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.gt(propertyPath, argument);
+    protected Predicate createGreaterThan(Expression<? extends Number> propertyPath, Number argument, CriteriaBuilder cb) {
+        return cb.gt(propertyPath, argument);
     }
 
     /**
@@ -276,12 +267,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected <Y extends Comparable<? super Y>> Predicate createGreaterThanComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.greaterThan(propertyPath, argument);
+    protected <Y extends Comparable<? super Y>> Predicate createGreaterThanComparable(Expression<? extends Y> propertyPath, Y argument, CriteriaBuilder cb) {
+        return cb.greaterThan(propertyPath, argument);
     }
 
     /**
@@ -289,12 +279,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument number.
-     * @param JpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createGreaterEqual(Expression<? extends Number> propertyPath, Number argument, JpaContext JpaContext) {
-        var builder = JpaContext.getCriteriaBuilder();
-        return builder.ge(propertyPath, argument);
+    protected Predicate createGreaterEqual(Expression<? extends Number> propertyPath, Number argument, CriteriaBuilder cb) {
+        return cb.ge(propertyPath, argument);
     }
 
     /**
@@ -302,12 +291,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected <Y extends Comparable<? super Y>> Predicate createGreaterEqualComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.greaterThanOrEqualTo(propertyPath, argument);
+    protected <Y extends Comparable<? super Y>> Predicate createGreaterEqualComparable(Expression<? extends Y> propertyPath, Y argument, CriteriaBuilder cb) {
+        return cb.greaterThanOrEqualTo(propertyPath, argument);
     }
 
     /**
@@ -315,12 +303,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument number.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createLessThan(Expression<? extends Number> propertyPath, Number argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.lt(propertyPath, argument);
+    protected Predicate createLessThan(Expression<? extends Number> propertyPath, Number argument, CriteriaBuilder cb) {
+        return cb.lt(propertyPath, argument);
     }
 
     /**
@@ -328,12 +315,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected <Y extends Comparable<? super Y>> Predicate createLessThanComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.lessThan(propertyPath, argument);
+    protected <Y extends Comparable<? super Y>> Predicate createLessThanComparable(Expression<? extends Y> propertyPath, Y argument, CriteriaBuilder cb) {
+        return cb.lessThan(propertyPath, argument);
     }
 
     /**
@@ -341,12 +327,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument number.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createLessEqual(Expression<? extends Number> propertyPath, Number argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.le(propertyPath, argument);
+    protected Predicate createLessEqual(Expression<? extends Number> propertyPath, Number argument, CriteriaBuilder cb) {
+        return cb.le(propertyPath, argument);
     }
 
     /**
@@ -354,12 +339,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param argument     Argument.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected <Y extends Comparable<? super Y>> Predicate createLessEqualComparable(Expression<? extends Y> propertyPath, Y argument, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.lessThanOrEqualTo(propertyPath, argument);
+    protected <Y extends Comparable<? super Y>> Predicate createLessEqualComparable(Expression<? extends Y> propertyPath, Y argument, CriteriaBuilder cb) {
+        return cb.lessThanOrEqualTo(propertyPath, argument);
     }
 
     /**
@@ -378,12 +362,11 @@ public class DefaultRsqlJpaComparisionPredicateBuilder implements RsqlJpaCompari
      *
      * @param propertyPath Property path that we want to compare.
      * @param arguments    List of arguments.
-     * @param jpaContext   JPA EntityManager.
+     * @param cb           the criteria builder
      * @return Predicate a predicate representation.
      */
-    protected Predicate createNotIn(Expression<?> propertyPath, List<?> arguments, JpaContext jpaContext) {
-        var builder = jpaContext.getCriteriaBuilder();
-        return builder.not(createIn(propertyPath, arguments));
+    protected Predicate createNotIn(Expression<?> propertyPath, List<?> arguments, CriteriaBuilder cb) {
+        return cb.not(createIn(propertyPath, arguments));
     }
 
 

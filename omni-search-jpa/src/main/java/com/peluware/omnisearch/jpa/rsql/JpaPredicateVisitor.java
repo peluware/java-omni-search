@@ -23,47 +23,52 @@
  */
 package com.peluware.omnisearch.jpa.rsql;
 
-import com.peluware.omnisearch.jpa.JpaContext;
 import com.peluware.omnisearch.jpa.JpaUtils;
 import cz.jirutka.rsql.parser.ast.*;
 import jakarta.persistence.criteria.*;
+import jakarta.persistence.metamodel.Metamodel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> {
+public class JpaPredicateVisitor<T> implements RSQLVisitor<Predicate, Object> {
 
     private static final Logger log = LoggerFactory.getLogger(JpaPredicateVisitor.class);
 
     private final Path<T> path;
+    private final RsqlJpaBuilderOptions builderOptions;
+    private final CriteriaBuilder criteriaBuilder;
+    private final Metamodel metamodel;
 
-    public JpaPredicateVisitor(Path<T> path, RsqlJpaBuilderOptions builderTools) {
-        super(path.getJavaType(), builderTools);
+    public JpaPredicateVisitor(Path<T> path, RsqlJpaBuilderOptions builderOptions, CriteriaBuilder criteriaBuilder, Metamodel metamodel) {
         this.path = path;
+        this.builderOptions = builderOptions;
+        this.criteriaBuilder = criteriaBuilder;
+        this.metamodel = metamodel;
     }
 
     @Override
-    public Predicate visit(AndNode node, JpaContext jpaContext) {
+    public Predicate visit(AndNode node, Object param) {
         log.debug("Creating Predicate for AndNode: {}", node);
-        return visitLogicalNode(node, jpaContext);
+        return visitLogicalNode(node);
     }
 
     @Override
-    public Predicate visit(OrNode node, JpaContext jpaContext) {
+    public Predicate visit(OrNode node, Object param) {
         log.debug("Creating Predicate for OrNode: {}", node);
-        return visitLogicalNode(node, jpaContext);
+        return visitLogicalNode(node);
     }
 
 
     @Override
-    public Predicate visit(ComparisonNode node, JpaContext jpaContext) {
+    public Predicate visit(ComparisonNode node, Object param) {
         log.debug("Creating Predicate for ComparisonNode: {}", node);
 
         var argumentParser = builderOptions.getArgumentParser();
 
-        var path = JpaUtils.findPath(node.getSelector(), this.path, jpaContext);
-        var type = path.getModel().getBindableJavaType();
+        var propertyPath = JpaUtils.findPath(node.getSelector(), this.path, metamodel);
+        var type = propertyPath.getModel().getBindableJavaType();
 
         log.trace("Cast all arguments to type {}.", type.getName());
 
@@ -71,31 +76,27 @@ public class JpaPredicateVisitor<T> extends AbstractJpaVisitor<Predicate, T> {
         var comparisionPredicateBuilder = builderOptions.getComparisionPredicateBuilder();
 
         return comparisionPredicateBuilder.buildComparisionPredicate(
-                path,
+                propertyPath,
                 node.getOperator(),
                 castedArguments,
-                jpaContext
+            criteriaBuilder
         );
     }
 
-    private Predicate visitLogicalNode(LogicalNode node, JpaContext jpaContext) {
-        var cb = jpaContext.getCriteriaBuilder();
+    private Predicate visitLogicalNode(LogicalNode node) {
         var children = node.getChildren();
         if (children.isEmpty()) {
-            return cb.disjunction();
+            return criteriaBuilder.disjunction();
         }
 
         var predicates = new ArrayList<Predicate>();
         for (var childNode : children) {
-            predicates.add(childNode.accept(this, jpaContext));
+            predicates.add(childNode.accept(this));
         }
 
         return switch (node.getOperator()) {
-            case OR -> cb.or(predicates.toArray(new Predicate[0]));
-            case AND -> cb.and(predicates.toArray(new Predicate[0]));
+            case OR -> criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+            case AND -> criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
-
-
-
 }
